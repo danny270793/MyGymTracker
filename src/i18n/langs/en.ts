@@ -1,5 +1,8 @@
 import type { Lang } from ".";
 
 export const en: Lang = {
-    helloWorld: 'Hello world'
+    helloWorld: 'hello world',
+    notFound: 'not found',
+    error: 'error',
+    login: 'login'
 }
