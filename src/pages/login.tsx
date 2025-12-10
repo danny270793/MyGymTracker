@@ -1,12 +1,12 @@
-import type { FC } from "react"
-import { useTranslation } from "react-i18next"
+import type { FC } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export const LoginPage: FC = () => {
-    const { t } = useTranslation()
+  const { t } = useTranslation()
 
-    return (
-        <div>
-            <h1>{t('login', { postProcess: 'capitalize' })}</h1>
-        </div>
-    )
+  return (
+    <div>
+      <h1>{t('login', { postProcess: 'capitalize' })}</h1>
+    </div>
+  )
 }
