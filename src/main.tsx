@@ -18,14 +18,26 @@ createRoot(document.getElementById('root')!).render(
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<AuthenticatedRoutes />}>
-            {routes.filter((route) => route.authenticated).map((route) => (
-              <Route key={route.name} path={route.path} element={route.component} />
-            ))}
+            {routes
+              .filter((route) => route.authenticated)
+              .map((route) => (
+                <Route
+                  key={route.name}
+                  path={route.path}
+                  element={route.component}
+                />
+              ))}
           </Route>
           <Route path="/" element={<NonAuthenticatedRoutes />}>
-            {routes.filter((route) => !route.authenticated).map((route) => (
-              <Route key={route.name} path={route.path} element={route.component} />
-            ))}
+            {routes
+              .filter((route) => !route.authenticated)
+              .map((route) => (
+                <Route
+                  key={route.name}
+                  path={route.path}
+                  element={route.component}
+                />
+              ))}
           </Route>
           <Route path="/error" element={<ErrorPage />} />
           <Route path="*" element={<NotFoundPage />} />
