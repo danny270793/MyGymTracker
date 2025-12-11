@@ -11,9 +11,6 @@ export const HomePage: FC = () => {
   const onLogoutClicked = async () => {
     setIsLoggingOut(true)
     dispatch(authActions.logoutRequested())
-    await new Promise(resolve => setTimeout(resolve, 3000))
-    dispatch(authActions.logoutSuccess())
-    setIsLoggingOut(false)
   }
 
   return (
