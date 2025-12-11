@@ -30,6 +30,7 @@ export interface Router {
   goToLogin: () => void
   goToError: () => void
   goToNotFound: () => void
+  goTo: (path: string) => void
 }
 
 export const useRouter = (): Router => {
@@ -47,6 +48,9 @@ export const useRouter = (): Router => {
     },
     goToNotFound: () => {
       navigate('*')
+    },
+    goTo: (path: string) => {
+      navigate(path)
     },
   }
 }
