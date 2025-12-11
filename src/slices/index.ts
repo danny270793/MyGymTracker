@@ -1,6 +1,8 @@
 import { configureStore, type Middleware } from '@reduxjs/toolkit';
 import { authReducer } from './auth-slice';
 import { Logger } from '../utils/logger';
+import createSagaMiddleware from 'redux-saga';
+import { rootSaga } from '../sagas';
 
 const logger = new Logger('./src/slices/index.ts');
 
@@ -12,18 +14,22 @@ const loggerMiddleware: Middleware = (_) => (next) => (action: unknown) => {
     const actionType = hasType(action) ? action.type : 'UNKNOWN_ACTION';
     logger.debug(`action.type: ${actionType}`);
     return next(action);
-  };
-  
+};
+
+const sagaMiddleware = createSagaMiddleware();
 
 export const store = configureStore({
     reducer: {
       auth: authReducer,
     },
+    devTools: import.meta.env.DEV,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         thunk: false,
         serializableCheck: false,
-      }).concat(loggerMiddleware),
+      }).concat(sagaMiddleware, loggerMiddleware),
 });
+
+sagaMiddleware.run(rootSaga);
 
 export type RootState = ReturnType<typeof store.getState>;
