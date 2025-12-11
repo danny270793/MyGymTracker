@@ -7,10 +7,10 @@ export const LoginPage: FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
 
-  const authState = authSelector('state');
-  const authError = authSelector('error');
-  const isLoggingIn = authState === 'login-requested';
-  const hasError = authState === 'login-error' || authError !== null;
+  const authState = authSelector('state')
+  const authError = authSelector('error')
+  const isLoggingIn = authState === 'login-requested'
+  const hasError = authState === 'login-error' || authError !== null
 
   const onLoginClicked = async () => {
     dispatch(authActions.loginRequested())
@@ -20,7 +20,13 @@ export const LoginPage: FC = () => {
     <div>
       <h1>{t('login', { postProcess: 'capitalize' })}</h1>
       {hasError && <p>{authError!.message}</p>}
-      <button className={`bg-blue-500 text-white p-2 rounded-md ${isLoggingIn ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={onLoginClicked} disabled={isLoggingIn}>{isLoggingIn ? 'Logging in...' : 'Login'}</button>
+      <button
+        className={`bg-blue-500 text-white p-2 rounded-md ${isLoggingIn ? 'opacity-50 cursor-not-allowed' : ''}`}
+        onClick={onLoginClicked}
+        disabled={isLoggingIn}
+      >
+        {isLoggingIn ? 'Logging in...' : 'Login'}
+      </button>
     </div>
   )
 }

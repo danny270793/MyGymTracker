@@ -1,37 +1,37 @@
-import { configureStore, type Middleware } from '@reduxjs/toolkit';
-import { authReducer } from './auth-slice';
-import { Logger } from '../utils/logger';
-import createSagaMiddleware from 'redux-saga';
-import { rootSaga } from '../sagas';
-import { appReducer } from './app-slice';
+import { configureStore, type Middleware } from '@reduxjs/toolkit'
+import { authReducer } from './auth-slice'
+import { Logger } from '../utils/logger'
+import createSagaMiddleware from 'redux-saga'
+import { rootSaga } from '../sagas'
+import { appReducer } from './app-slice'
 
-const logger = new Logger('./src/slices/index.ts');
+const logger = new Logger('./src/slices/index.ts')
 
 const hasType = (obj: unknown): obj is { type: string } => {
-    return typeof obj === 'object' && obj !== null && 'type' in obj;
+  return typeof obj === 'object' && obj !== null && 'type' in obj
 }
 
 const loggerMiddleware: Middleware = (_) => (next) => (action: unknown) => {
-    const actionType = hasType(action) ? action.type : 'UNKNOWN_ACTION';
-    logger.debug(`action.type: ${actionType}`);
-    return next(action);
-};
+  const actionType = hasType(action) ? action.type : 'UNKNOWN_ACTION'
+  logger.debug(`action.type: ${actionType}`)
+  return next(action)
+}
 
-const sagaMiddleware = createSagaMiddleware();
+const sagaMiddleware = createSagaMiddleware()
 
 export const store = configureStore({
-    reducer: {
-      app: appReducer,
-      auth: authReducer,
-    },
-    devTools: import.meta.env.DEV,
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
-        thunk: false,
-        serializableCheck: false,
-      }).concat(sagaMiddleware, loggerMiddleware),
-});
+  reducer: {
+    app: appReducer,
+    auth: authReducer,
+  },
+  devTools: import.meta.env.DEV,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      thunk: false,
+      serializableCheck: false,
+    }).concat(sagaMiddleware, loggerMiddleware),
+})
 
-sagaMiddleware.run(rootSaga);
+sagaMiddleware.run(rootSaga)
 
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof store.getState>
