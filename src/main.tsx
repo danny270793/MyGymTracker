@@ -9,45 +9,48 @@ import { NonAuthenticatedRoutes } from './components/technicals/non-authenticate
 import { routes } from './hooks/use-router.tsx'
 import { ErrorPage } from './pages/error-page.tsx'
 import { NotFoundPage } from './pages/not-found-page.tsx'
-import ScrollToTop from './components/technicals/scroll-to-top.tsx'
+import { ScrollToTop } from './components/technicals/scroll-to-top.tsx'
 import { store } from './slices/index.ts'
 import { Provider } from 'react-redux'
-import SagasNavigatorListener from './components/technicals/sagas-navigator-listener.tsx'
+import { SagasNavigatorListener } from './components/technicals/sagas-navigator-listener.tsx'
+import { ThemeContextProvider } from './contexts/use-theme.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
       <Provider store={store}>
-        <BrowserRouter>
-          <SagasNavigatorListener />
-          <ScrollToTop />
-          <Routes>
-            <Route path="/" element={<AuthenticatedRoutes />}>
-              {routes
-                .filter((route) => route.authenticated)
-                .map((route) => (
-                  <Route
-                    key={route.name}
-                    path={route.path}
-                    element={route.component}
-                  />
-                ))}
-            </Route>
-            <Route path="/" element={<NonAuthenticatedRoutes />}>
-              {routes
-                .filter((route) => !route.authenticated)
-                .map((route) => (
-                  <Route
-                    key={route.name}
-                    path={route.path}
-                    element={route.component}
-                  />
-                ))}
-            </Route>
-            <Route path="/error" element={<ErrorPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </BrowserRouter>
+        <ThemeContextProvider>
+          <BrowserRouter>
+            <SagasNavigatorListener />
+            <ScrollToTop />
+            <Routes>
+              <Route path="/" element={<AuthenticatedRoutes />}>
+                {routes
+                  .filter((route) => route.authenticated)
+                  .map((route) => (
+                    <Route
+                      key={route.name}
+                      path={route.path}
+                      element={route.component}
+                    />
+                  ))}
+              </Route>
+              <Route path="/" element={<NonAuthenticatedRoutes />}>
+                {routes
+                  .filter((route) => !route.authenticated)
+                  .map((route) => (
+                    <Route
+                      key={route.name}
+                      path={route.path}
+                      element={route.component}
+                    />
+                  ))}
+              </Route>
+              <Route path="/error" element={<ErrorPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </BrowserRouter>
+        </ThemeContextProvider>
       </Provider>
     </ErrorBoundary>
   </StrictMode>,
