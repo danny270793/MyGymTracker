@@ -17,9 +17,6 @@ export const appSlice = createSlice({
         errorOcurred: (state: AppState, action: PayloadAction<Error>) => {
             state.error = action.payload;
         },
-        errorCleared: (state: AppState) => {
-            state.error = null;
-        },
     },
 })
 
