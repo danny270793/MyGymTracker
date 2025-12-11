@@ -8,8 +8,9 @@ export const HomePage: FC = () => {
   const dispatch = useDispatch()
 
   const authState = authSelector('state');
-  const isLoggingOut = authState === 'logout-requested';
   const authError = authSelector('error');
+  const isLoggingOut = authState === 'logout-requested';
+  const hasError = authState === 'logout-error' || authError !== null;
 
   const onLogoutClicked = async () => {
     dispatch(authActions.logoutRequested())
@@ -18,7 +19,7 @@ export const HomePage: FC = () => {
   return (
     <div>
       <h1>{t('helloWorld', { postProcess: 'capitalize' })}</h1>
-      {authError && <p>{authError.message}</p>}
+      {hasError && <p>{authError!.message}</p>}
       <button className={`bg-blue-500 text-white p-2 rounded-md ${isLoggingOut ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={onLogoutClicked} disabled={isLoggingOut}>{isLoggingOut ? 'Logging out...' : 'Logout'}</button>
     </div>
   )
