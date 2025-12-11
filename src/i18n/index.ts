@@ -7,20 +7,20 @@ import { capitalizeProcessor } from './post-processors/capitalize'
 import { uppercaseProcessor } from './post-processors/uppercase'
 
 i18n
-    .use(LanguageDetector)
-    .use(initReactI18next)
-    .use(capitalizeProcessor)
-    .use(uppercaseProcessor)
-    .init({
-        resources: {
-            en: { translation: en },
-            es: { translation: es },
-        },
-        fallbackLng: 'en',
-        debug: import.meta.env.DEV,
-        interpolation: {
-            escapeValue: false,
-        }
-})
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .use(capitalizeProcessor)
+  .use(uppercaseProcessor)
+  .init({
+    resources: {
+      en: { translation: en },
+      es: { translation: es },
+    },
+    fallbackLng: 'en',
+    debug: import.meta.env.DEV,
+    interpolation: {
+      escapeValue: false,
+    },
+  })
 
 export { i18n }
