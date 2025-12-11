@@ -11,9 +11,6 @@ export const LoginPage: FC = () => {
   const onLoginClicked = async () => {
     setIsLoggingIn(true)
     dispatch(authActions.loginRequested())
-    await new Promise(resolve => setTimeout(resolve, 3000))
-    dispatch(authActions.loginSuccess({ accessToken: '123', refreshToken: '456', tokenType: 'Bearer' }))
-    setIsLoggingIn(false)
   }
 
   return (
