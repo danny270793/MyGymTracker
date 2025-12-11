@@ -1,7 +1,7 @@
 import { all, call, put, spawn, type ForkEffect } from 'redux-saga/effects'
 import { sessionSagas } from './auth-sagas'
 import { Logger } from '../utils/logger'
-import { appActions } from '../slices/app-slice'
+import { navigatorActions } from '../slices/navigator-slice'
 
 const logger = new Logger('./src/sagas/index.ts')
 
@@ -17,13 +17,7 @@ export const rootSaga = function* () {
           })
         } catch (error) {
           logger.error('general error on sagas', error)
-          yield put(
-            appActions.errorOcurred(
-              error instanceof Error
-                ? error
-                : new Error('Unknown error running saga'),
-            ),
-          )
+          yield put(navigatorActions.navigate('/error'))
         }
       }),
     ),

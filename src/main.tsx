@@ -12,12 +12,14 @@ import { NotFoundPage } from './pages/not-found-page.tsx'
 import ScrollToTop from './components/technicals/scroll-to-top.tsx'
 import { store } from './slices/index.ts'
 import { Provider } from 'react-redux'
+import SagasNavigatorListener from './components/technicals/sagas-navigator-listener.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
       <Provider store={store}>
         <BrowserRouter>
+          <SagasNavigatorListener />
           <ScrollToTop />
           <Routes>
             <Route path="/" element={<AuthenticatedRoutes />}>
