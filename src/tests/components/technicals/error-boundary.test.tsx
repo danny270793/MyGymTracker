@@ -6,7 +6,8 @@ import { i18n } from '../../../i18n'
 describe('ErrorBoundary', () => {
   it('should render ok', () => {
     const testText = 'Test'
-    render(<ErrorBoundary>
+    render(
+      <ErrorBoundary>
         <div>{testText}</div>
       </ErrorBoundary>,
     )
@@ -15,11 +16,14 @@ describe('ErrorBoundary', () => {
 
   it('should render error', () => {
     const errorButtonText = 'Throw error'
-    render(<ErrorBoundary>
+    render(
+      <ErrorBoundary>
         <div>
-          <button onClick={() => {
-            throw new Error('Test')
-          }}>
+          <button
+            onClick={() => {
+              throw new Error('Test')
+            }}
+          >
             {errorButtonText}
           </button>
         </div>
