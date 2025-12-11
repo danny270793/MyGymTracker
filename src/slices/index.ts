@@ -3,6 +3,7 @@ import { authReducer } from './auth-slice';
 import { Logger } from '../utils/logger';
 import createSagaMiddleware from 'redux-saga';
 import { rootSaga } from '../sagas';
+import { appReducer } from './app-slice';
 
 const logger = new Logger('./src/slices/index.ts');
 
@@ -20,6 +21,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 export const store = configureStore({
     reducer: {
+      app: appReducer,
       auth: authReducer,
     },
     devTools: import.meta.env.DEV,
