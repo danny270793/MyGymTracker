@@ -24,9 +24,12 @@ export const authSlice = createSlice({
     reducers: {
         loginRequested: (state: AuthState) => {
             state.state = 'login-requested';
+            state.error = null;
         },
         loginSuccess: (state: AuthState, action: PayloadAction<{ accessToken: string, refreshToken: string, tokenType: string }>) => {
             state.state = 'login-success';
+            state.error = null;
+
             state.accessToken = action.payload.accessToken;
             state.refreshToken = action.payload.refreshToken;
             state.tokenType = action.payload.tokenType;
@@ -36,14 +39,17 @@ export const authSlice = createSlice({
             localStorage.setItem('tokenType', action.payload.tokenType);
         },
         loginError: (state: AuthState, action: PayloadAction<Error>) => {
-            state.state = null;
+            state.state = 'login-error';
             state.error = action.payload;
         },
         logoutRequested: (state: AuthState) => {
             state.state = 'logout-requested';
+            state.error = null;
         },
         logoutSuccess: (state: AuthState) => {
             state.state = 'logout-success';
+            state.error = null;
+
             state.accessToken = null;
             state.refreshToken = null;
             state.tokenType = null;
@@ -53,7 +59,7 @@ export const authSlice = createSlice({
             localStorage.removeItem('tokenType');
         },
         logoutError: (state: AuthState, action: PayloadAction<Error>) => {
-            state.state = null;
+            state.state = 'logout-error';
             state.error = action.payload;
         },
     },
