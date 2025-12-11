@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useRouter } from '../../hooks/use-router'
 import { navigatorSelector } from '../../slices/navigator-slice'
 
-export default function SagasNavigatorListener() {
+export function SagasNavigatorListener() {
   const path = navigatorSelector('path')
   const router = useRouter()
 
