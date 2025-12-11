@@ -8,8 +8,9 @@ const logger = new Logger('./src/sagas/auth-sagas.ts');
 function* loginSaga(action: PayloadAction<{ username: string; password: string }>) {
     logger.debug('loginSaga started');
     try {
-        throw new Error('error reaching backend');
-        yield delay(3000)
+        if(Math.random() > 0.5) {
+            throw new Error('error reaching backend');
+        }
         yield put(authActions.loginSuccess({ accessToken: '123', refreshToken: '456', tokenType: 'Bearer' }))
     } catch (error) {
         yield put(authActions.loginError(error instanceof Error ? error : new Error('Unknown error running login saga')))
