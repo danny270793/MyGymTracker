@@ -7,16 +7,15 @@
     "web:start": "vite",
     "web:build": "tsc -b && vite build --mode development",
 
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "format": "prettier --write .",
-    "test": "vitest run",
-    "test:watch": "vitest",
+    "code:lint": "eslint .",
+    "code:format": "prettier --write .",
+    "code:test": "vitest run",
 
-    "ios": "npm run web:build && cap sync ios && cap run ios",
-    "ios:production": "npm run build:production && cap sync ios",
+    "ios:start": "npm run web:build && cap sync ios && cap run ios",
+    "ios:build": "npm run web:build && cap sync ios",
     
-    "android": "npm run build && cap sync android && cap run android"
+    "android:start": "npm run web:build && cap sync android && cap run android",
+    "android:build": "npm run web:build && cap sync android"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.3",
