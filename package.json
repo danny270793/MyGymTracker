@@ -4,18 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "web:start": "vite",
+    "web": "vite",
     "web:build": "tsc -b && vite build --mode development",
 
     "code:lint": "eslint .",
     "code:format": "prettier --write .",
     "code:test": "vitest run",
 
-    "ios:start": "npm run web:build && cap sync ios && cap run ios",
-    "ios:build": "npm run web:build && cap sync ios",
-    
-    "android:start": "npm run web:build && cap sync android && cap run android",
-    "android:build": "npm run web:build && cap sync android"
+    "ios": "npm run web:build && cap sync ios && cap run ios",
+    "android": "npm run web:build && cap sync android && cap run android"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.3",
