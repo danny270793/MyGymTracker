@@ -31,9 +31,24 @@ export const HomePage: FC = () => {
       </button>
       <p>Current theme: {theme}</p>
       <p>Full theme: {fullTheme}</p>
-      <button className='bg-blue-500 text-white p-2 rounded-md dark:bg-gray-800' onClick={() => setTheme('light')}>Set Light Theme</button>
-      <button className='bg-blue-500 text-white p-2 rounded-md dark:bg-gray-800' onClick={() => setTheme('dark')}>Set Dark Theme</button>
-      <button className='bg-blue-500 text-white p-2 rounded-md dark:bg-gray-800' onClick={() => setTheme('system')}>Set System Theme</button>
+      <button
+        className="bg-blue-500 text-white p-2 rounded-md dark:bg-gray-800"
+        onClick={() => setTheme('light')}
+      >
+        Set Light Theme
+      </button>
+      <button
+        className="bg-blue-500 text-white p-2 rounded-md dark:bg-gray-800"
+        onClick={() => setTheme('dark')}
+      >
+        Set Dark Theme
+      </button>
+      <button
+        className="bg-blue-500 text-white p-2 rounded-md dark:bg-gray-800"
+        onClick={() => setTheme('system')}
+      >
+        Set System Theme
+      </button>
     </div>
   )
 }
