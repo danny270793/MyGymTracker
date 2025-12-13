@@ -6,7 +6,7 @@ interface LayoutProps {
 }
 
 export function Layout(props: LayoutProps): ReactNode {
-  return <div className={props.className}>{props.children}</div>;
+  return <div className={`flex flex-col min-h-screen ${props.className}`}>{props.children}</div>;
 }
 
 interface HeaderProps {
@@ -31,7 +31,7 @@ interface ContentProps {
 
 export function Content(props: ContentProps): ReactNode {
   return (
-    <div className={`ios-safe-left ios-safe-right ${props.className}`}>
+    <div className={`ios-safe-left ios-safe-right flex-1 overflow-auto ${props.className}`}>
       {props.children}
     </div>
   );
