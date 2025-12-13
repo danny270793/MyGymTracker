@@ -19,7 +19,6 @@
     "@capacitor/android": "^7.4.3",
     "@capacitor/core": "^7.4.3",
     "@capacitor/ios": "^7.4.3",
-    "@danny270793/layout": "^0.0.2",
     "@reduxjs/toolkit": "^2.11.1",
     "@tailwindcss/vite": "^4.1.17",
     "i18next": "^25.7.2",
