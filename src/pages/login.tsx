@@ -2,6 +2,7 @@ import { type FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { authActions, authSelector } from '../slices/auth-slice'
+import { Layout } from '@danny270793/layout'
 
 export const LoginPage: FC = () => {
   const { t } = useTranslation()
@@ -17,16 +18,23 @@ export const LoginPage: FC = () => {
   }
 
   return (
-    <div>
-      <h1>{t('login', { postProcess: 'capitalize' })}</h1>
-      {hasError && <p>{authError!.message}</p>}
-      <button
-        className={`bg-blue-500 text-white p-2 rounded-md ${isLoggingIn ? 'opacity-50 cursor-not-allowed' : ''}`}
-        onClick={onLoginClicked}
-        disabled={isLoggingIn}
-      >
-        {isLoggingIn ? 'Logging in...' : 'Login'}
-      </button>
-    </div>
+    <Layout>
+      <Layout.Header className="bg-blue-500 dark:bg-gray-800 dark:text-white">
+        <h1>{t('login', { postProcess: 'capitalize' })}</h1>
+      </Layout.Header>
+      <Layout.Content className="p-4 dark:bg-gray-800 dark:text-white">
+        {hasError && <p>{authError!.message}</p>}
+        <button
+          className={`bg-blue-500 hover:bg-blue-600 text-white dark:bg-gray-600 dark:hover:bg-gray-700 px-4 py-2 rounded ${isLoggingIn ? 'opacity-50 cursor-not-allowed' : ''}`}
+          onClick={onLoginClicked}
+          disabled={isLoggingIn}
+        >
+          {isLoggingIn ? 'Logging in...' : 'Login'}
+        </button>
+      </Layout.Content>
+      <Layout.Footer className="bg-blue-500 dark:bg-gray-800 dark:text-white">
+        <h1>Footer</h1>
+      </Layout.Footer>
+    </Layout>
   )
 }
