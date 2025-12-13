@@ -1,7 +1,8 @@
 {
   "name": "mygymtracker",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "versionCode": 1,
   "type": "module",
   "scripts": {
     "code:lint": "eslint .",
@@ -14,7 +15,8 @@
     "android": "npm run web:build -- --mode development && cap sync android && cap run android",
     "android:build": "npm run web:build && cap sync android",
     "mobile:build": "npm run web:build && npm run android:build && npm run ios:build",
-    "icons:generate": "capacitor-assets generate"
+    "icons:generate": "capacitor-assets generate",
+    "release": "npx tsx src/scripts/update-versions.ts"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.3",
