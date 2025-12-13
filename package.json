@@ -13,7 +13,8 @@
     "ios:build": "npm run web:build && cap sync ios",
     "android": "npm run web:build -- --mode development && cap sync android && cap run android",
     "android:build": "npm run web:build && cap sync android",
-    "mobile:build": "npm run web:build && npm run android:build && npm run ios:build"
+    "mobile:build": "npm run web:build && npm run android:build && npm run ios:build",
+    "icons:generate": "capacitor-assets generate"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.3",
@@ -32,6 +33,7 @@
     "tailwindcss": "^4.1.17"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^7.4.3",
     "@eslint/js": "^9.39.1",
     "@testing-library/jest-dom": "^6.9.1",
