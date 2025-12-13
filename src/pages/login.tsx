@@ -2,7 +2,7 @@ import { type FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { authActions, authSelector } from '../slices/auth-slice'
-import { Layout } from '@danny270793/layout'
+import { Layout } from '../components/stateless/layout'
 
 export const LoginPage: FC = () => {
   const { t } = useTranslation()
