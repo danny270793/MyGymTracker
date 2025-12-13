@@ -3,6 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+
+    <!--
+      Protects against injection & allows Cordova schemes
+
+      default-src       Load everything else (fonts, frames, etc.) only from self, data URIs, and Cordova's internal gap: scheme.
+      script-src        Allow local scripts + inline scripts (required by many Cordova plugins).
+      style-src         Allow local and inline styles.
+      img-src           Images can come from your app (self) or base64 (data:)
+      connect-src       Allows fetch/XHR/WebSocket requests only to http://localhost:8000 and ws://localhost:8000.
+    -->
+    <meta http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self' capacitor://localhost data: blob: file:;
+        script-src 'self' 'unsafe-eval' capacitor://localhost file:;
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data: blob:;
+        connect-src 'self' capacitor://localhost %VITE_BACKEND_URL%;
+        media-src 'self' data: blob:;
+        object-src 'none';"
+    />
     
     <!--
       Responsive, disables zoom
