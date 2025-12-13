@@ -13,7 +13,8 @@
       img-src           Images can come from your app (self) or base64 (data:)
       connect-src       Allows fetch/XHR/WebSocket requests only to http://localhost:8000 and ws://localhost:8000.
     -->
-    <meta http-equiv="Content-Security-Policy"
+    <meta
+      http-equiv="Content-Security-Policy"
       content="
         default-src 'self' capacitor://localhost data: blob: file:;
         script-src 'self' 'unsafe-eval' capacitor://localhost file:;
@@ -23,7 +24,7 @@
         media-src 'self' data: blob:;
         object-src 'none';"
     />
-    
+
     <!--
       Responsive, disables zoom
 
@@ -34,9 +35,9 @@
       viewport-fit=cover	  Tells the browser to use the full screen, even under notches or rounded corners (used with safe-area-inset-* CSS).
      -->
     <meta
-     name="viewport"
-     content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
-   />
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
 
     <!-- Prevents mobile UI quirks -->
     <meta name="format-detection" content="telephone=no" />
