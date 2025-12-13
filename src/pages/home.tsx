@@ -21,7 +21,7 @@ export const HomePage: FC = () => {
 
   return (
     <Layout>
-      <Layout.Header className="bg-blue-500 dark:bg-gray-800 dark:text-white">
+      <Layout.Header className="bg-blue-500 dark:bg-gray-600 dark:text-white">
         <h1>{t('helloWorld', { postProcess: 'capitalize' })}</h1>
       </Layout.Header>
       <Layout.Content className="p-4 dark:bg-gray-800 dark:text-white">
@@ -56,7 +56,7 @@ export const HomePage: FC = () => {
           Set System Theme
         </button>
       </Layout.Content>
-      <Layout.Footer className="bg-blue-500 dark:bg-gray-800 dark:text-white">
+      <Layout.Footer className="bg-blue-500 dark:bg-gray-600 dark:text-white">
         <h1>Footer</h1>
       </Layout.Footer>
     </Layout>
