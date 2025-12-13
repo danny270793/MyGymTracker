@@ -1,3 +1,4 @@
+import { Layout } from '../components/stateless/layout.tsx'
 import type { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -5,8 +6,10 @@ export const NotFoundPage: FC = () => {
   const { t } = useTranslation()
 
   return (
-    <div>
-      <h1>{t('notFound', { postProcess: 'capitalize' })}</h1>
-    </div>
+    <Layout>
+      <Layout.Content className="p-4 dark:bg-gray-800 dark:text-white">
+        <h1>{t('notFound', { postProcess: 'capitalize' })}</h1>
+      </Layout.Content>
+    </Layout>
   )
 }

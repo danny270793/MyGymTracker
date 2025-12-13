@@ -7,16 +7,12 @@
     "code:lint": "eslint .",
     "code:format": "prettier --write .",
     "code:test": "vitest run",
-
     "web": "vite",
     "web:build": "tsc -b && vite build",
-
     "ios": "npm run web:build -- --mode development && cap sync ios && cap run ios",
     "ios:build": "npm run web:build && cap sync ios",
-
     "android": "npm run web:build -- --mode development && cap sync android && cap run android",
     "android:build": "npm run web:build && cap sync android",
-
     "mobile:build": "npm run web:build && npm run android:build && npm run ios:build"
   },
   "dependencies": {
