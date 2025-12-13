@@ -66,6 +66,7 @@ export const ThemeContextProvider: React.FC<ThemeContextProviderProps> = ({
 
   useEffect(() => {
     if (window.matchMedia) {
+      setTheme(theme)
       const handleSystemThemeChange = (event: MediaQueryListEvent) => {
         logger.debug(
           `System theme changed to ${event.matches ? 'dark' : 'light'}`,
