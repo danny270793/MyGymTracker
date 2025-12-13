@@ -6,7 +6,7 @@ import { Logger } from '../utils/logger'
 const logger = new Logger('./src/sagas/auth-sagas.ts')
 
 function* loginSaga(
-  action: PayloadAction<{ username: string; password: string }>,
+  _: PayloadAction<{ username: string; password: string }>,
 ) {
   logger.debug('loginSaga started')
   try {
@@ -28,7 +28,7 @@ function* loginSaga(
   }
 }
 
-function* logoutSaga(action: PayloadAction<void>) {
+function* logoutSaga(_: PayloadAction<void>) {
   logger.debug('logoutSaga started')
   try {
     yield put(authActions.logoutSuccess())
