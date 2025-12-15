@@ -1,8 +1,10 @@
 import { type FC, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
 import { Formik, Form, Field, type FormikHelpers } from 'formik'
 import * as Yup from 'yup'
 import { useRouter } from '../hooks/use-router'
+import { authActions, authSelector } from '../slices/auth-slice'
 
 interface RegisterFormValues {
   email: string
@@ -12,7 +14,13 @@ interface RegisterFormValues {
 
 export const RegisterPage: FC = () => {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
   const router = useRouter()
+
+  const authState = authSelector('state')
+  const authError = authSelector('error')
+  const isRegistering = authState === 'register-requested'
+  const hasError = authState === 'register-error' || authError !== null
 
   const initialValues: RegisterFormValues = {
     email: '',
@@ -37,11 +45,22 @@ export const RegisterPage: FC = () => {
   )
 
   const handleSubmit = (
-    _values: RegisterFormValues,
+    values: RegisterFormValues,
     _helpers: FormikHelpers<RegisterFormValues>,
   ) => {
-    // TODO: Implement registration with Supabase
-    console.log('Register:', _values)
+    dispatch(
+      authActions.registerRequested({
+        email: values.email,
+        password: values.password,
+      }),
+    )
+  }
+
+  // Translate error message if it's a known error key
+  const getErrorMessage = (error: Error | null): string | null => {
+    if (!error) return null
+    const translated = t(error.message as 'emailAlreadyRegistered')
+    return translated !== error.message ? translated : error.message
   }
 
   return (
@@ -98,13 +117,22 @@ export const RegisterPage: FC = () => {
               {t('registerWelcome', { postProcess: 'capitalize' })}
             </h2>
 
+            {/* Server Error message */}
+            {hasError && (
+              <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 animate-[shake_0.5s_ease-in-out]">
+                <p className="text-red-300 text-sm text-center font-medium">
+                  {getErrorMessage(authError)}
+                </p>
+              </div>
+            )}
+
             {/* Register Form */}
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
             >
-              {({ errors, touched, isSubmitting }) => (
+              {({ errors, touched }) => (
                 <Form className="space-y-5">
                   {/* Email Field */}
                   <div>
@@ -120,7 +148,7 @@ export const RegisterPage: FC = () => {
                       type="email"
                       autoComplete="email"
                       placeholder={t('emailPlaceholder')}
-                      disabled={isSubmitting}
+                      disabled={isRegistering}
                       className={`
                         w-full px-4 py-3 rounded-xl
                         bg-white/5 border transition-all duration-200
@@ -155,7 +183,7 @@ export const RegisterPage: FC = () => {
                       type="password"
                       autoComplete="new-password"
                       placeholder={t('passwordPlaceholder')}
-                      disabled={isSubmitting}
+                      disabled={isRegistering}
                       className={`
                         w-full px-4 py-3 rounded-xl
                         bg-white/5 border transition-all duration-200
@@ -190,7 +218,7 @@ export const RegisterPage: FC = () => {
                       type="password"
                       autoComplete="new-password"
                       placeholder={t('confirmPasswordPlaceholder')}
-                      disabled={isSubmitting}
+                      disabled={isRegistering}
                       className={`
                         w-full px-4 py-3 rounded-xl
                         bg-white/5 border transition-all duration-200
@@ -214,18 +242,18 @@ export const RegisterPage: FC = () => {
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isRegistering}
                     className={`
                       w-full py-4 px-6 rounded-xl font-bold text-lg tracking-wide
                       transition-all duration-300 ease-out mt-2
                       ${
-                        isSubmitting
+                        isRegistering
                           ? 'bg-violet-600/50 text-violet-200 cursor-wait'
                           : 'bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:shadow-lg hover:shadow-violet-500/40 hover:scale-[1.02] active:scale-[0.98]'
                       }
                     `}
                   >
-                    {isSubmitting ? (
+                    {isRegistering ? (
                       <span className="flex items-center justify-center gap-3">
                         <svg
                           className="animate-spin h-5 w-5"
@@ -318,6 +346,11 @@ export const RegisterPage: FC = () => {
         @keyframes fadeIn {
           from { opacity: 0; }
           to { opacity: 1; }
+        }
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-5px); }
+          75% { transform: translateX(5px); }
         }
       `}</style>
     </div>
