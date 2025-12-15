@@ -1,20 +1,36 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { authActions } from '../slices/auth-slice'
-import { put, takeLatest, type ForkEffect } from 'redux-saga/effects'
+import { authActions, type LoginCredentials } from '../slices/auth-slice'
+import { put, takeLatest, delay, type ForkEffect } from 'redux-saga/effects'
 import { Logger } from '../utils/logger'
 
 const logger = new Logger('./src/sagas/auth-sagas.ts')
 
-function* loginSaga(_: PayloadAction<{ username: string; password: string }>) {
-  logger.debug('loginSaga started')
+// Mock credentials for testing
+const MOCK_USER = {
+  username: 'demo',
+  password: 'demo123',
+}
+
+function* loginSaga(action: PayloadAction<LoginCredentials>) {
+  logger.debug('loginSaga started', JSON.stringify(action.payload))
   try {
-    yield put(
-      authActions.loginSuccess({
-        accessToken: '123',
-        refreshToken: '456',
-        tokenType: 'Bearer',
-      }),
-    )
+    // Simulate network delay
+    yield delay(1500)
+
+    const { username, password } = action.payload
+
+    // Mock authentication validation
+    if (username === MOCK_USER.username && password === MOCK_USER.password) {
+      yield put(
+        authActions.loginSuccess({
+          accessToken: `mock-access-token-${Date.now()}`,
+          refreshToken: `mock-refresh-token-${Date.now()}`,
+          tokenType: 'Bearer',
+        }),
+      )
+    } else {
+      throw new Error('invalidCredentials')
+    }
   } catch (error) {
     yield put(
       authActions.loginError(
