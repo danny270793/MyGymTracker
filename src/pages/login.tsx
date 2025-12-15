@@ -6,7 +6,7 @@ import * as Yup from 'yup'
 import { authActions, authSelector } from '../slices/auth-slice'
 
 interface LoginFormValues {
-  username: string
+  email: string
   password: string
 }
 
@@ -20,16 +20,16 @@ export const LoginPage: FC = () => {
   const hasError = authState === 'login-error' || authError !== null
 
   const initialValues: LoginFormValues = {
-    username: '',
+    email: '',
     password: '',
   }
 
   const validationSchema = useMemo(
     () =>
       Yup.object({
-        username: Yup.string()
-          .min(3, t('usernameMinLength'))
-          .required(t('usernameRequired')),
+        email: Yup.string()
+          .email(t('emailInvalid'))
+          .required(t('emailRequired')),
         password: Yup.string()
           .min(6, t('passwordMinLength'))
           .required(t('passwordRequired')),
@@ -123,20 +123,20 @@ export const LoginPage: FC = () => {
             >
               {({ errors, touched }) => (
                 <Form className="space-y-5">
-                  {/* Username Field */}
+                  {/* Email Field */}
                   <div>
                     <label
-                      htmlFor="username"
+                      htmlFor="email"
                       className="block text-sm font-medium text-emerald-300/90 mb-2"
                     >
-                      {t('username', { postProcess: 'capitalize' })}
+                      {t('email', { postProcess: 'capitalize' })}
                     </label>
                     <Field
-                      id="username"
-                      name="username"
-                      type="text"
-                      autoComplete="username"
-                      placeholder={t('usernamePlaceholder')}
+                      id="email"
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      placeholder={t('emailPlaceholder')}
                       disabled={isLoggingIn}
                       className={`
                         w-full px-4 py-3 rounded-xl
@@ -145,15 +145,15 @@ export const LoginPage: FC = () => {
                         focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50
                         disabled:opacity-50 disabled:cursor-not-allowed
                         ${
-                          errors.username && touched.username
+                          errors.email && touched.email
                             ? 'border-red-500/50 focus:ring-red-500/50 focus:border-red-500/50'
                             : 'border-white/10 hover:border-white/20'
                         }
                       `}
                     />
-                    {errors.username && touched.username && (
+                    {errors.email && touched.email && (
                       <p className="mt-2 text-sm text-red-400 font-medium">
-                        {String(errors.username)}
+                        {String(errors.email)}
                       </p>
                     )}
                   </div>
@@ -253,10 +253,6 @@ export const LoginPage: FC = () => {
               )}
             </Formik>
 
-            {/* Demo hint */}
-            <p className="mt-6 text-center text-xs text-slate-400/60">
-              {t('demoHint')}
-            </p>
           </div>
         </div>
       </div>
