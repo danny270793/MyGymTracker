@@ -36,4 +36,9 @@ export interface Lang {
   createAccount: string
   alreadyHaveAccount: string
   backToLogin: string
+  // Register success
+  registerSuccessTitle: string
+  registerSuccessMessage: string
+  registerSuccessHint: string
+  goToLogin: string
 }
