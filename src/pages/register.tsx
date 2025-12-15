@@ -20,6 +20,7 @@ export const RegisterPage: FC = () => {
   const authState = authSelector('state')
   const authError = authSelector('error')
   const isRegistering = authState === 'register-requested'
+  const isRegisterSuccess = authState === 'register-success'
   const hasError = authState === 'register-error' || authError !== null
 
   const initialValues: RegisterFormValues = {
@@ -113,203 +114,267 @@ export const RegisterPage: FC = () => {
         {/* Register Card */}
         <div className="w-full max-w-sm animate-[fadeInUp_0.6s_ease-out_0.2s_both]">
           <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 shadow-2xl">
-            <h2 className="text-2xl font-bold text-white mb-6 text-center">
-              {t('registerWelcome', { postProcess: 'capitalize' })}
-            </h2>
-
-            {/* Server Error message */}
-            {hasError && (
-              <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 animate-[shake_0.5s_ease-in-out]">
-                <p className="text-red-300 text-sm text-center font-medium">
-                  {getErrorMessage(authError)}
-                </p>
-              </div>
-            )}
-
-            {/* Register Form */}
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={handleSubmit}
-            >
-              {({ errors, touched }) => (
-                <Form className="space-y-5">
-                  {/* Email Field */}
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="block text-sm font-medium text-violet-300/90 mb-2"
-                    >
-                      {t('email', { postProcess: 'capitalize' })}
-                    </label>
-                    <Field
-                      id="email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      placeholder={t('emailPlaceholder')}
-                      disabled={isRegistering}
-                      className={`
-                        w-full px-4 py-3 rounded-xl
-                        bg-white/5 border transition-all duration-200
-                        text-white placeholder-slate-400/50
-                        focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50
-                        disabled:opacity-50 disabled:cursor-not-allowed
-                        ${
-                          errors.email && touched.email
-                            ? 'border-red-500/50 focus:ring-red-500/50 focus:border-red-500/50'
-                            : 'border-white/10 hover:border-white/20'
-                        }
-                      `}
-                    />
-                    {errors.email && touched.email && (
-                      <p className="mt-2 text-sm text-red-400 font-medium">
-                        {String(errors.email)}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Password Field */}
-                  <div>
-                    <label
-                      htmlFor="password"
-                      className="block text-sm font-medium text-violet-300/90 mb-2"
-                    >
-                      {t('password', { postProcess: 'capitalize' })}
-                    </label>
-                    <Field
-                      id="password"
-                      name="password"
-                      type="password"
-                      autoComplete="new-password"
-                      placeholder={t('passwordPlaceholder')}
-                      disabled={isRegistering}
-                      className={`
-                        w-full px-4 py-3 rounded-xl
-                        bg-white/5 border transition-all duration-200
-                        text-white placeholder-slate-400/50
-                        focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50
-                        disabled:opacity-50 disabled:cursor-not-allowed
-                        ${
-                          errors.password && touched.password
-                            ? 'border-red-500/50 focus:ring-red-500/50 focus:border-red-500/50'
-                            : 'border-white/10 hover:border-white/20'
-                        }
-                      `}
-                    />
-                    {errors.password && touched.password && (
-                      <p className="mt-2 text-sm text-red-400 font-medium">
-                        {String(errors.password)}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Confirm Password Field */}
-                  <div>
-                    <label
-                      htmlFor="confirmPassword"
-                      className="block text-sm font-medium text-violet-300/90 mb-2"
-                    >
-                      {t('confirmPassword', { postProcess: 'capitalize' })}
-                    </label>
-                    <Field
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      type="password"
-                      autoComplete="new-password"
-                      placeholder={t('confirmPasswordPlaceholder')}
-                      disabled={isRegistering}
-                      className={`
-                        w-full px-4 py-3 rounded-xl
-                        bg-white/5 border transition-all duration-200
-                        text-white placeholder-slate-400/50
-                        focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50
-                        disabled:opacity-50 disabled:cursor-not-allowed
-                        ${
-                          errors.confirmPassword && touched.confirmPassword
-                            ? 'border-red-500/50 focus:ring-red-500/50 focus:border-red-500/50'
-                            : 'border-white/10 hover:border-white/20'
-                        }
-                      `}
-                    />
-                    {errors.confirmPassword && touched.confirmPassword && (
-                      <p className="mt-2 text-sm text-red-400 font-medium">
-                        {String(errors.confirmPassword)}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    disabled={isRegistering}
-                    className={`
-                      w-full py-4 px-6 rounded-xl font-bold text-lg tracking-wide
-                      transition-all duration-300 ease-out mt-2
-                      ${
-                        isRegistering
-                          ? 'bg-violet-600/50 text-violet-200 cursor-wait'
-                          : 'bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:shadow-lg hover:shadow-violet-500/40 hover:scale-[1.02] active:scale-[0.98]'
-                      }
-                    `}
+            {isRegisterSuccess ? (
+              /* Success View */
+              <div className="text-center">
+                {/* Success Icon */}
+                <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-full bg-emerald-500/20 border border-emerald-500/30">
+                  <svg
+                    className="w-8 h-8 text-emerald-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
                   >
-                    {isRegistering ? (
-                      <span className="flex items-center justify-center gap-3">
-                        <svg
-                          className="animate-spin h-5 w-5"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          />
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          />
-                        </svg>
-                        {t('registering', { postProcess: 'capitalize' })}
-                      </span>
-                    ) : (
-                      <span className="flex items-center justify-center gap-2">
-                        {t('registerButton', { postProcess: 'uppercase' })}
-                        <svg
-                          className="w-5 h-5"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={2.5}
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                          />
-                        </svg>
-                      </span>
-                    )}
-                  </button>
-                </Form>
-              )}
-            </Formik>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"
+                    />
+                  </svg>
+                </div>
 
-            {/* Back to login link */}
-            <p className="mt-6 text-center text-sm text-slate-400/80">
-              {t('alreadyHaveAccount')}{' '}
-              <button
-                type="button"
-                onClick={() => router.goToLogin()}
-                className="text-violet-400 hover:text-violet-300 font-semibold transition-colors"
-              >
-                {t('backToLogin', { postProcess: 'capitalize' })}
-              </button>
-            </p>
+                <h2 className="text-2xl font-bold text-white mb-4">
+                  {t('registerSuccessTitle', { postProcess: 'capitalize' })}
+                </h2>
+
+                <p className="text-slate-300/80 text-sm mb-4 leading-relaxed">
+                  {t('registerSuccessMessage', { postProcess: 'capitalize' })}
+                </p>
+
+                <p className="text-violet-300/70 text-xs mb-8">
+                  {t('registerSuccessHint', { postProcess: 'capitalize' })}
+                </p>
+
+                {/* Go to Login Button */}
+                <button
+                  type="button"
+                  onClick={() => router.goToLogin()}
+                  className="w-full py-4 px-6 rounded-xl font-bold text-lg tracking-wide
+                    transition-all duration-300 ease-out
+                    bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white 
+                    hover:shadow-lg hover:shadow-violet-500/40 hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  <span className="flex items-center justify-center gap-2">
+                    {t('goToLogin', { postProcess: 'uppercase' })}
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2.5}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                      />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+            ) : (
+              /* Register Form View */
+              <>
+                <h2 className="text-2xl font-bold text-white mb-6 text-center">
+                  {t('registerWelcome', { postProcess: 'capitalize' })}
+                </h2>
+
+                {/* Server Error message */}
+                {hasError && (
+                  <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 animate-[shake_0.5s_ease-in-out]">
+                    <p className="text-red-300 text-sm text-center font-medium">
+                      {getErrorMessage(authError)}
+                    </p>
+                  </div>
+                )}
+
+                {/* Register Form */}
+                <Formik
+                  initialValues={initialValues}
+                  validationSchema={validationSchema}
+                  onSubmit={handleSubmit}
+                >
+                  {({ errors, touched }) => (
+                    <Form className="space-y-5">
+                      {/* Email Field */}
+                      <div>
+                        <label
+                          htmlFor="email"
+                          className="block text-sm font-medium text-violet-300/90 mb-2"
+                        >
+                          {t('email', { postProcess: 'capitalize' })}
+                        </label>
+                        <Field
+                          id="email"
+                          name="email"
+                          type="email"
+                          autoComplete="email"
+                          placeholder={t('emailPlaceholder')}
+                          disabled={isRegistering}
+                          className={`
+                            w-full px-4 py-3 rounded-xl
+                            bg-white/5 border transition-all duration-200
+                            text-white placeholder-slate-400/50
+                            focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50
+                            disabled:opacity-50 disabled:cursor-not-allowed
+                            ${
+                              errors.email && touched.email
+                                ? 'border-red-500/50 focus:ring-red-500/50 focus:border-red-500/50'
+                                : 'border-white/10 hover:border-white/20'
+                            }
+                          `}
+                        />
+                        {errors.email && touched.email && (
+                          <p className="mt-2 text-sm text-red-400 font-medium">
+                            {String(errors.email)}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Password Field */}
+                      <div>
+                        <label
+                          htmlFor="password"
+                          className="block text-sm font-medium text-violet-300/90 mb-2"
+                        >
+                          {t('password', { postProcess: 'capitalize' })}
+                        </label>
+                        <Field
+                          id="password"
+                          name="password"
+                          type="password"
+                          autoComplete="new-password"
+                          placeholder={t('passwordPlaceholder')}
+                          disabled={isRegistering}
+                          className={`
+                            w-full px-4 py-3 rounded-xl
+                            bg-white/5 border transition-all duration-200
+                            text-white placeholder-slate-400/50
+                            focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50
+                            disabled:opacity-50 disabled:cursor-not-allowed
+                            ${
+                              errors.password && touched.password
+                                ? 'border-red-500/50 focus:ring-red-500/50 focus:border-red-500/50'
+                                : 'border-white/10 hover:border-white/20'
+                            }
+                          `}
+                        />
+                        {errors.password && touched.password && (
+                          <p className="mt-2 text-sm text-red-400 font-medium">
+                            {String(errors.password)}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Confirm Password Field */}
+                      <div>
+                        <label
+                          htmlFor="confirmPassword"
+                          className="block text-sm font-medium text-violet-300/90 mb-2"
+                        >
+                          {t('confirmPassword', { postProcess: 'capitalize' })}
+                        </label>
+                        <Field
+                          id="confirmPassword"
+                          name="confirmPassword"
+                          type="password"
+                          autoComplete="new-password"
+                          placeholder={t('confirmPasswordPlaceholder')}
+                          disabled={isRegistering}
+                          className={`
+                            w-full px-4 py-3 rounded-xl
+                            bg-white/5 border transition-all duration-200
+                            text-white placeholder-slate-400/50
+                            focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50
+                            disabled:opacity-50 disabled:cursor-not-allowed
+                            ${
+                              errors.confirmPassword && touched.confirmPassword
+                                ? 'border-red-500/50 focus:ring-red-500/50 focus:border-red-500/50'
+                                : 'border-white/10 hover:border-white/20'
+                            }
+                          `}
+                        />
+                        {errors.confirmPassword && touched.confirmPassword && (
+                          <p className="mt-2 text-sm text-red-400 font-medium">
+                            {String(errors.confirmPassword)}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Submit Button */}
+                      <button
+                        type="submit"
+                        disabled={isRegistering}
+                        className={`
+                          w-full py-4 px-6 rounded-xl font-bold text-lg tracking-wide
+                          transition-all duration-300 ease-out mt-2
+                          ${
+                            isRegistering
+                              ? 'bg-violet-600/50 text-violet-200 cursor-wait'
+                              : 'bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:shadow-lg hover:shadow-violet-500/40 hover:scale-[1.02] active:scale-[0.98]'
+                          }
+                        `}
+                      >
+                        {isRegistering ? (
+                          <span className="flex items-center justify-center gap-3">
+                            <svg
+                              className="animate-spin h-5 w-5"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              />
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              />
+                            </svg>
+                            {t('registering', { postProcess: 'capitalize' })}
+                          </span>
+                        ) : (
+                          <span className="flex items-center justify-center gap-2">
+                            {t('registerButton', { postProcess: 'uppercase' })}
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              strokeWidth={2.5}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                              />
+                            </svg>
+                          </span>
+                        )}
+                      </button>
+                    </Form>
+                  )}
+                </Formik>
+
+                {/* Back to login link */}
+                <p className="mt-6 text-center text-sm text-slate-400/80">
+                  {t('alreadyHaveAccount')}{' '}
+                  <button
+                    type="button"
+                    onClick={() => router.goToLogin()}
+                    className="text-violet-400 hover:text-violet-300 font-semibold transition-colors"
+                  >
+                    {t('backToLogin', { postProcess: 'capitalize' })}
+                  </button>
+                </p>
+              </>
+            )}
           </div>
         </div>
       </div>
