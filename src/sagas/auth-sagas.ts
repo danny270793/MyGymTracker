@@ -1,5 +1,9 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { authActions, type LoginCredentials } from '../slices/auth-slice'
+import {
+  authActions,
+  type LoginCredentials,
+  type RegisterCredentials,
+} from '../slices/auth-slice'
 import { put, takeLatest, call, type ForkEffect } from 'redux-saga/effects'
 import { Logger } from '../utils/logger'
 import { supabase } from '../services/supabase'
@@ -73,7 +77,44 @@ function* logoutSaga(_: PayloadAction<void>) {
   }
 }
 
+function* registerSaga(action: PayloadAction<RegisterCredentials>) {
+  logger.debug('registerSaga started', JSON.stringify(action.payload))
+  try {
+    const { email, password } = action.payload
+
+    // Register with Supabase using email/password
+    const response: AuthResponse = yield call([supabase.auth, supabase.auth.signUp], {
+      email,
+      password,
+    })
+
+    if (response.error) {
+      // Map common Supabase errors to i18n keys
+      let errorKey = response.error.message
+      if (response.error.message.includes('already registered')) {
+        errorKey = 'emailAlreadyRegistered'
+      } else if (response.error.message.includes('valid email')) {
+        errorKey = 'emailInvalid'
+      } else if (response.error.message.includes('password')) {
+        errorKey = 'passwordTooWeak'
+      }
+      throw new Error(errorKey)
+    }
+
+    yield put(authActions.registerSuccess())
+  } catch (error) {
+    yield put(
+      authActions.registerError(
+        error instanceof Error
+          ? error
+          : new Error('Unknown error running register saga'),
+      ),
+    )
+  }
+}
+
 export const sessionSagas: ForkEffect[] = [
   takeLatest(authActions.loginRequested.type, loginSaga),
   takeLatest(authActions.logoutRequested.type, logoutSaga),
+  takeLatest(authActions.registerRequested.type, registerSaga),
 ]
