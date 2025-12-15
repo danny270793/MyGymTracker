@@ -38,4 +38,10 @@ export const en: Lang = {
   createAccount: 'create one',
   alreadyHaveAccount: 'already have an account?',
   backToLogin: 'sign in',
+  // Register success
+  registerSuccessTitle: 'check your email',
+  registerSuccessMessage:
+    "we've sent a confirmation link to your email address. please click the link to verify your account.",
+  registerSuccessHint: 'after confirming, come back here to sign in',
+  goToLogin: 'go to login',
 }
