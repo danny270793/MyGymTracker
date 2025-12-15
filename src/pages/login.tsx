@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux'
 import { Formik, Form, Field, type FormikHelpers } from 'formik'
 import * as Yup from 'yup'
 import { authActions, authSelector } from '../slices/auth-slice'
+import { useRouter } from '../hooks/use-router'
 
 interface LoginFormValues {
   email: string
@@ -13,6 +14,7 @@ interface LoginFormValues {
 export const LoginPage: FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const router = useRouter()
 
   const authState = authSelector('state')
   const authError = authSelector('error')
@@ -194,9 +196,9 @@ export const LoginPage: FC = () => {
                   </div>
 
                   {/* Submit Button */}
-                  <button
+        <button
                     type="submit"
-                    disabled={isLoggingIn}
+          disabled={isLoggingIn}
                     className={`
                       w-full py-4 px-6 rounded-xl font-bold text-lg tracking-wide
                       transition-all duration-300 ease-out mt-2
@@ -248,11 +250,22 @@ export const LoginPage: FC = () => {
                         </svg>
                       </span>
                     )}
-                  </button>
+        </button>
                 </Form>
               )}
             </Formik>
 
+            {/* Create account link */}
+            <p className="mt-6 text-center text-sm text-slate-400/80">
+              {t('noAccount')}{' '}
+              <button
+                type="button"
+                onClick={() => router.goToRegister()}
+                className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors"
+              >
+                {t('createAccount', { postProcess: 'capitalize' })}
+              </button>
+            </p>
           </div>
         </div>
       </div>
