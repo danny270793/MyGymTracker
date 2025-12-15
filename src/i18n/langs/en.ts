@@ -25,6 +25,8 @@ export const en: Lang = {
   confirmPasswordRequired: 'please confirm your password',
   passwordsMustMatch: 'passwords must match',
   invalidCredentials: 'invalid email or password',
+  emailAlreadyRegistered: 'this email is already registered',
+  passwordTooWeak: 'password is too weak',
   // Register page
   register: 'register',
   registerWelcome: 'create account',
