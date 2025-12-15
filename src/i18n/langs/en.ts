@@ -11,16 +11,14 @@ export const en: Lang = {
   loggingIn: 'signing in...',
   loginFooter: 'your fitness journey starts here',
   // Form fields
-  username: 'username',
+  email: 'email',
   password: 'password',
-  usernamePlaceholder: 'enter your username',
+  emailPlaceholder: 'enter your email',
   passwordPlaceholder: 'enter your password',
   // Validation errors
-  usernameRequired: 'username is required',
-  usernameMinLength: 'username must be at least 3 characters',
+  emailRequired: 'email is required',
+  emailInvalid: 'please enter a valid email',
   passwordRequired: 'password is required',
   passwordMinLength: 'password must be at least 6 characters',
-  invalidCredentials: 'invalid username or password',
-  // Demo hint
-  demoHint: 'demo credentials: demo / demo123',
+  invalidCredentials: 'invalid email or password',
 }
