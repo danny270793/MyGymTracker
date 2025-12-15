@@ -26,7 +26,7 @@ const initialState: AuthState = {
 }
 
 export interface LoginCredentials {
-  username: string
+  email: string
   password: string
 }
 
