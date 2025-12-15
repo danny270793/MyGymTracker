@@ -11,12 +11,27 @@ export interface Lang {
   // Form fields
   email: string
   password: string
+  confirmPassword: string
   emailPlaceholder: string
   passwordPlaceholder: string
+  confirmPasswordPlaceholder: string
   // Validation errors
   emailRequired: string
   emailInvalid: string
   passwordRequired: string
   passwordMinLength: string
+  confirmPasswordRequired: string
+  passwordsMustMatch: string
   invalidCredentials: string
+  // Register page
+  register: string
+  registerWelcome: string
+  registerSubtitle: string
+  registerButton: string
+  registering: string
+  registerFooter: string
+  noAccount: string
+  createAccount: string
+  alreadyHaveAccount: string
+  backToLogin: string
 }
