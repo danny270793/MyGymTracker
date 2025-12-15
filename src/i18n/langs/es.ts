@@ -13,12 +13,27 @@ export const es: Lang = {
   // Form fields
   email: 'correo electrónico',
   password: 'contraseña',
+  confirmPassword: 'confirmar contraseña',
   emailPlaceholder: 'ingresa tu correo',
   passwordPlaceholder: 'ingresa tu contraseña',
+  confirmPasswordPlaceholder: 'confirma tu contraseña',
   // Validation errors
   emailRequired: 'el correo es requerido',
   emailInvalid: 'ingresa un correo válido',
   passwordRequired: 'la contraseña es requerida',
   passwordMinLength: 'la contraseña debe tener al menos 6 caracteres',
+  confirmPasswordRequired: 'confirma tu contraseña',
+  passwordsMustMatch: 'las contraseñas deben coincidir',
   invalidCredentials: 'correo o contraseña inválidos',
+  // Register page
+  register: 'registrarse',
+  registerWelcome: 'crear cuenta',
+  registerSubtitle: 'comienza tu viaje fitness hoy',
+  registerButton: 'crear cuenta',
+  registering: 'creando cuenta...',
+  registerFooter: 'únete a miles de atletas',
+  noAccount: '¿no tienes cuenta?',
+  createAccount: 'crea una',
+  alreadyHaveAccount: '¿ya tienes cuenta?',
+  backToLogin: 'inicia sesión',
 }
