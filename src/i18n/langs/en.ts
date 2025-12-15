@@ -7,7 +7,20 @@ export const en: Lang = {
   login: 'login',
   loginWelcome: 'welcome back',
   loginSubtitle: 'track your gains, crush your goals',
-  loginButton: 'start training',
-  loggingIn: 'preparing your workout...',
+  loginButton: 'sign in',
+  loggingIn: 'signing in...',
   loginFooter: 'your fitness journey starts here',
+  // Form fields
+  username: 'username',
+  password: 'password',
+  usernamePlaceholder: 'enter your username',
+  passwordPlaceholder: 'enter your password',
+  // Validation errors
+  usernameRequired: 'username is required',
+  usernameMinLength: 'username must be at least 3 characters',
+  passwordRequired: 'password is required',
+  passwordMinLength: 'password must be at least 6 characters',
+  invalidCredentials: 'invalid username or password',
+  // Demo hint
+  demoHint: 'demo credentials: demo / demo123',
 }
