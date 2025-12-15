@@ -11,16 +11,14 @@ export const es: Lang = {
   loggingIn: 'iniciando sesión...',
   loginFooter: 'tu viaje fitness comienza aquí',
   // Form fields
-  username: 'usuario',
+  email: 'correo electrónico',
   password: 'contraseña',
-  usernamePlaceholder: 'ingresa tu usuario',
+  emailPlaceholder: 'ingresa tu correo',
   passwordPlaceholder: 'ingresa tu contraseña',
   // Validation errors
-  usernameRequired: 'el usuario es requerido',
-  usernameMinLength: 'el usuario debe tener al menos 3 caracteres',
+  emailRequired: 'el correo es requerido',
+  emailInvalid: 'ingresa un correo válido',
   passwordRequired: 'la contraseña es requerida',
   passwordMinLength: 'la contraseña debe tener al menos 6 caracteres',
-  invalidCredentials: 'usuario o contraseña inválidos',
-  // Demo hint
-  demoHint: 'credenciales demo: demo / demo123',
+  invalidCredentials: 'correo o contraseña inválidos',
 }
