@@ -1,36 +1,45 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { authActions, type LoginCredentials } from '../slices/auth-slice'
-import { put, takeLatest, delay, type ForkEffect } from 'redux-saga/effects'
+import { put, takeLatest, call, type ForkEffect } from 'redux-saga/effects'
 import { Logger } from '../utils/logger'
+import { supabase } from '../services/supabase'
+import type { AuthResponse } from '@supabase/supabase-js'
 
 const logger = new Logger('./src/sagas/auth-sagas.ts')
-
-// Mock credentials for testing
-const MOCK_USER = {
-  username: 'demo',
-  password: 'demo123',
-}
 
 function* loginSaga(action: PayloadAction<LoginCredentials>) {
   logger.debug('loginSaga started', JSON.stringify(action.payload))
   try {
-    // Simulate network delay
-    yield delay(1500)
+    const { email, password } = action.payload
 
-    const { username, password } = action.payload
+    // Authenticate with Supabase using email/password
+    const response: AuthResponse = yield call(
+      [supabase.auth, supabase.auth.signInWithPassword],
+      {
+        email,
+        password,
+      },
+    )
 
-    // Mock authentication validation
-    if (username === MOCK_USER.username && password === MOCK_USER.password) {
-      yield put(
-        authActions.loginSuccess({
-          accessToken: `mock-access-token-${Date.now()}`,
-          refreshToken: `mock-refresh-token-${Date.now()}`,
-          tokenType: 'Bearer',
-        }),
+    if (response.error) {
+      throw new Error(
+        response.error.message === 'Invalid login credentials'
+          ? 'invalidCredentials'
+          : response.error.message,
       )
-    } else {
+    }
+
+    if (!response.data.session) {
       throw new Error('invalidCredentials')
     }
+
+    yield put(
+      authActions.loginSuccess({
+        accessToken: response.data.session.access_token,
+        refreshToken: response.data.session.refresh_token,
+        tokenType: response.data.session.token_type,
+      }),
+    )
   } catch (error) {
     yield put(
       authActions.loginError(
@@ -45,6 +54,13 @@ function* loginSaga(action: PayloadAction<LoginCredentials>) {
 function* logoutSaga(_: PayloadAction<void>) {
   logger.debug('logoutSaga started')
   try {
+    // Sign out from Supabase
+    const { error } = yield call([supabase.auth, supabase.auth.signOut])
+
+    if (error) {
+      throw error
+    }
+
     yield put(authActions.logoutSuccess())
   } catch (error) {
     yield put(
