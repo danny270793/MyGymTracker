@@ -23,6 +23,7 @@
     "@capacitor/core": "^7.4.3",
     "@capacitor/ios": "^7.4.3",
     "@reduxjs/toolkit": "^2.11.1",
+    "@supabase/supabase-js": "^2.87.3",
     "@tailwindcss/vite": "^4.1.17",
     "formik": "^2.4.9",
     "i18next": "^25.7.2",
