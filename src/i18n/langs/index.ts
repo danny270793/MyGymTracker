@@ -23,6 +23,8 @@ export interface Lang {
   confirmPasswordRequired: string
   passwordsMustMatch: string
   invalidCredentials: string
+  emailAlreadyRegistered: string
+  passwordTooWeak: string
   // Register page
   register: string
   registerWelcome: string
