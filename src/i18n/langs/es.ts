@@ -5,4 +5,9 @@ export const es: Lang = {
   notFound: 'no encontrado',
   error: 'error',
   login: 'iniciar sesión',
+  loginWelcome: 'bienvenido de nuevo',
+  loginSubtitle: 'registra tus logros, alcanza tus metas',
+  loginButton: 'comenzar entrenamiento',
+  loggingIn: 'preparando tu entrenamiento...',
+  loginFooter: 'tu viaje fitness comienza aquí',
 }
