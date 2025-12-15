@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+Instead of use <form/> use Formik and make validations with Yup
+
