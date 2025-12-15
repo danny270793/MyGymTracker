@@ -5,9 +5,9 @@ export class Logger {
   constructor(name: string) {
     this.name = name
   }
-  write(type: LogType, message: string): void {
+  write(type: LogType, ...messages: string[]): void {
     if (import.meta.env.DEV) {
-      const text: string = `${this.name} ${type} ${message}`
+      const text: string = `${this.name} ${type} ${messages}`
       if (type === 'error') {
         console.error(text)
       } else {
@@ -15,14 +15,14 @@ export class Logger {
       }
     }
   }
-  debug(message: string): void {
-    this.write('debug', message)
+  debug(...messages: string[]): void {
+    this.write('debug', ...messages)
   }
-  warn(message: string): void {
-    this.write('warn', message)
+  warn(...messages: string[]): void {
+    this.write('warn', ...messages)
   }
   error(message: string, error: unknown = undefined): void {
-    this.write('error', message)
+    this.write('error', ...message)
     if (error) {
       console.error(error)
     }
