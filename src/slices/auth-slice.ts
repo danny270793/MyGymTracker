@@ -25,11 +25,19 @@ const initialState: AuthState = {
   error: null,
 }
 
+export interface LoginCredentials {
+  username: string
+  password: string
+}
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    loginRequested: (state: AuthState) => {
+    loginRequested: (
+      state: AuthState,
+      _action: PayloadAction<LoginCredentials>,
+    ) => {
       state.state = 'login-requested'
       state.error = null
     },
