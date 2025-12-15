@@ -9,16 +9,14 @@ export interface Lang {
   loggingIn: string
   loginFooter: string
   // Form fields
-  username: string
+  email: string
   password: string
-  usernamePlaceholder: string
+  emailPlaceholder: string
   passwordPlaceholder: string
   // Validation errors
-  usernameRequired: string
-  usernameMinLength: string
+  emailRequired: string
+  emailInvalid: string
   passwordRequired: string
   passwordMinLength: string
   invalidCredentials: string
-  // Demo hint
-  demoHint: string
 }
