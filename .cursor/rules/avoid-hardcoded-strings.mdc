@@ -1,0 +1,4 @@
+---
+alwaysApply: true
+---
+When have to add texts to ui, do not hardcode strings, use i18n
