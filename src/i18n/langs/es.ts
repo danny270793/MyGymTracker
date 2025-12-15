@@ -38,4 +38,10 @@ export const es: Lang = {
   createAccount: 'crea una',
   alreadyHaveAccount: '¿ya tienes cuenta?',
   backToLogin: 'inicia sesión',
+  // Register success
+  registerSuccessTitle: 'revisa tu correo',
+  registerSuccessMessage:
+    'hemos enviado un enlace de confirmación a tu correo electrónico. por favor haz clic en el enlace para verificar tu cuenta.',
+  registerSuccessHint: 'después de confirmar, vuelve aquí para iniciar sesión',
+  goToLogin: 'ir a iniciar sesión',
 }
