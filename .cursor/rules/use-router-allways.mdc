@@ -1,0 +1,4 @@
+---
+alwaysApply: true
+---
+When try to navigate use the `./src/hooks/use-router.tsx` hook instead of a direct call to `navigate()`
