@@ -1,5 +1,6 @@
 import { configureStore, type Middleware } from '@reduxjs/toolkit'
 import { authReducer } from './auth-slice'
+import { musclesReducer } from './muscles-slice'
 import { Logger } from '../utils/logger'
 import createSagaMiddleware from 'redux-saga'
 import { rootSaga } from '../sagas'
@@ -23,6 +24,7 @@ export const store = configureStore({
   reducer: {
     navigator: navigatorReducer,
     auth: authReducer,
+    muscles: musclesReducer,
   },
   devTools: import.meta.env.DEV,
   middleware: (getDefaultMiddleware) =>
