@@ -2,6 +2,16 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import { useSelector } from 'react-redux'
 import type { RootState } from '.'
 
+export interface LoginCredentials {
+  email: string
+  password: string
+}
+
+export interface RegisterCredentials {
+  email: string
+  password: string
+}
+
 export interface AuthState {
   accessToken: string | null
   refreshToken: string | null
@@ -13,6 +23,9 @@ export interface AuthState {
     | 'logout-requested'
     | 'logout-success'
     | 'logout-error'
+    | 'register-requested'
+    | 'register-success'
+    | 'register-error'
     | null
   error: Error | null
 }
@@ -29,7 +42,10 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    loginRequested: (state: AuthState) => {
+    loginRequested: (
+      state: AuthState,
+      _action: PayloadAction<LoginCredentials>,
+    ) => {
       state.state = 'login-requested'
       state.error = null
     },
@@ -74,6 +90,21 @@ export const authSlice = createSlice({
     },
     logoutError: (state: AuthState, action: PayloadAction<Error>) => {
       state.state = 'logout-error'
+      state.error = action.payload
+    },
+    registerRequested: (
+      state: AuthState,
+      _action: PayloadAction<RegisterCredentials>,
+    ) => {
+      state.state = 'register-requested'
+      state.error = null
+    },
+    registerSuccess: (state: AuthState) => {
+      state.state = 'register-success'
+      state.error = null
+    },
+    registerError: (state: AuthState, action: PayloadAction<Error>) => {
+      state.state = 'register-error'
       state.error = action.payload
     },
   },
