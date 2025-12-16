@@ -20,7 +20,7 @@
         script-src 'self' 'unsafe-eval' capacitor://localhost file:;
         style-src 'self' 'unsafe-inline';
         img-src 'self' data: blob:;
-        connect-src 'self' capacitor://localhost;
+        connect-src 'self' capacitor://localhost %VITE_SUPABASE_URL%;
         media-src 'self' data: blob:;
         object-src 'none';"
     />
