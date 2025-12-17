@@ -78,4 +78,5 @@ export interface Lang {
   exerciseName: string
   exerciseNamePlaceholder: string
   exerciseNameRequired: string
+  editExercise: string
 }
