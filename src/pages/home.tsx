@@ -1,6 +1,8 @@
 import { type FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
 import { authActions, authSelector } from '../slices/auth-slice'
 import { musclesActions, musclesSelector } from '../slices/muscles-slice'
 import { useTheme } from '../contexts/use-theme.tsx'
@@ -15,6 +17,7 @@ export const HomePage: FC = () => {
 
   const [selectedOption, setSelectedOption] = useState<SidebarOption>('muscles')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 
   const authState = authSelector('state')
   const authError = authSelector('error')
@@ -24,6 +27,19 @@ export const HomePage: FC = () => {
   const muscles = musclesSelector('muscles')
   const musclesState = musclesSelector('state')
   const musclesError = musclesSelector('error')
+  const createState = musclesSelector('createState')
+
+  const createMuscleSchema = Yup.object().shape({
+    name: Yup.string().required(t('muscleNameRequired')),
+  })
+
+  const formik = useFormik({
+    initialValues: { name: '' },
+    validationSchema: createMuscleSchema,
+    onSubmit: (values) => {
+      dispatch(musclesActions.createRequested({ name: values.name }))
+    },
+  })
 
   useEffect(() => {
     if (selectedOption === 'muscles' && musclesState === 'idle') {
@@ -31,12 +47,111 @@ export const HomePage: FC = () => {
     }
   }, [selectedOption, musclesState, dispatch])
 
+  useEffect(() => {
+    if (createState === 'success') {
+      setIsCreateModalOpen(false)
+      formik.resetForm()
+      dispatch(musclesActions.resetCreateState())
+    }
+  }, [createState, dispatch, formik])
+
   const onLogoutClicked = () => {
     dispatch(authActions.logoutRequested())
   }
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen)
+  }
+
+  const openCreateModal = () => {
+    setIsCreateModalOpen(true)
+    dispatch(musclesActions.resetCreateState())
+  }
+
+  const closeCreateModal = () => {
+    setIsCreateModalOpen(false)
+    formik.resetForm()
+    dispatch(musclesActions.resetCreateState())
+  }
+
+  const renderCreateModal = () => {
+    if (!isCreateModalOpen) return null
+
+    return (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md animate-in fade-in zoom-in duration-200">
+          <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+            <h2 className="text-xl font-bold text-slate-800 dark:text-white">
+              {t('createMuscle', { postProcess: 'capitalize' })}
+            </h2>
+          </div>
+
+          <form onSubmit={formik.handleSubmit} className="p-6 space-y-4">
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+              >
+                {t('muscleName', { postProcess: 'capitalize' })}
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                placeholder={t('muscleNamePlaceholder')}
+                value={formik.values.name}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                disabled={createState === 'creating'}
+                className={`w-full px-4 py-3 rounded-xl border bg-white dark:bg-slate-900 text-slate-800 dark:text-white placeholder-slate-400
+                  focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all
+                  ${
+                    formik.touched.name && formik.errors.name
+                      ? 'border-red-500'
+                      : 'border-slate-200 dark:border-slate-700'
+                  }
+                  ${createState === 'creating' ? 'opacity-50' : ''}`}
+              />
+              {formik.touched.name && formik.errors.name && (
+                <p className="mt-2 text-sm text-red-500">{formik.errors.name}</p>
+              )}
+            </div>
+
+            {createState === 'error' && musclesError && (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-3">
+                <p className="text-sm text-red-600 dark:text-red-400">
+                  {musclesError.message}
+                </p>
+              </div>
+            )}
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={closeCreateModal}
+                disabled={createState === 'creating'}
+                className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium
+                  hover:bg-slate-50 dark:hover:bg-slate-700 transition-all
+                  disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {t('cancel', { postProcess: 'capitalize' })}
+              </button>
+              <button
+                type="submit"
+                disabled={createState === 'creating'}
+                className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-medium
+                  hover:from-emerald-600 hover:to-teal-600 transition-all shadow-lg shadow-emerald-500/30
+                  disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {createState === 'creating'
+                  ? t('creating', { postProcess: 'capitalize' })
+                  : t('create', { postProcess: 'capitalize' })}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )
   }
 
   const renderContent = () => {
@@ -237,7 +352,23 @@ export const HomePage: FC = () => {
           )}
           {renderContent()}
         </Layout.Content>
+
+        {/* Floating Action Button */}
+        {selectedOption === 'muscles' && (
+          <button
+            onClick={openCreateModal}
+            className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/40
+              hover:from-emerald-600 hover:to-teal-600 hover:shadow-xl hover:shadow-emerald-500/50 transition-all
+              flex items-center justify-center text-2xl"
+            title={t('createMuscle', { postProcess: 'capitalize' })}
+          >
+            +
+          </button>
+        )}
       </div>
+
+      {/* Create Muscle Modal */}
+      {renderCreateModal()}
     </Layout>
   )
 }
