@@ -16,11 +16,13 @@ export const MuscleDetailPage: FC = () => {
   const { id } = useParams<{ id: string }>()
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
   const muscles = musclesSelector('muscles')
   const musclesState = musclesSelector('state')
   const musclesError = musclesSelector('error')
   const updateState = musclesSelector('updateState')
+  const deleteState = musclesSelector('deleteState')
 
   const muscle: Muscle | undefined = muscles.find((m) => m.id === Number(id))
 
@@ -52,6 +54,14 @@ export const MuscleDetailPage: FC = () => {
     }
   }, [updateState, dispatch])
 
+  useEffect(() => {
+    if (deleteState === 'success') {
+      setIsDeleteModalOpen(false)
+      dispatch(musclesActions.resetDeleteState())
+      router.goToHome()
+    }
+  }, [deleteState, dispatch, router])
+
   const openEditModal = () => {
     editFormik.setFieldValue('name', muscle?.name || '')
     setIsEditModalOpen(true)
@@ -62,6 +72,22 @@ export const MuscleDetailPage: FC = () => {
     setIsEditModalOpen(false)
     editFormik.resetForm()
     dispatch(musclesActions.resetUpdateState())
+  }
+
+  const openDeleteModal = () => {
+    setIsDeleteModalOpen(true)
+    dispatch(musclesActions.resetDeleteState())
+  }
+
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false)
+    dispatch(musclesActions.resetDeleteState())
+  }
+
+  const handleDelete = () => {
+    if (muscle) {
+      dispatch(musclesActions.deleteRequested({ id: muscle.id }))
+    }
   }
 
   const renderEditModal = () => {
@@ -144,6 +170,72 @@ export const MuscleDetailPage: FC = () => {
     )
   }
 
+  const renderDeleteModal = () => {
+    if (!isDeleteModalOpen || !muscle) return null
+
+    return (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md animate-in fade-in zoom-in duration-200">
+          <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+            <h2 className="text-xl font-bold text-slate-800 dark:text-white">
+              {t('deleteConfirmTitle', { postProcess: 'capitalize' })}
+            </h2>
+          </div>
+
+          <div className="p-6 space-y-4">
+            <p className="text-slate-600 dark:text-slate-400">
+              {t('deleteConfirmMessage', { postProcess: 'capitalize' })}
+            </p>
+
+            <div className="flex items-center p-4 bg-slate-100 dark:bg-slate-700 rounded-xl">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-lg">
+                {muscle.name.charAt(0).toUpperCase()}
+              </div>
+              <div className="ml-3">
+                <p className="font-semibold text-slate-800 dark:text-white">
+                  {muscle.name}
+                </p>
+              </div>
+            </div>
+
+            {deleteState === 'error' && musclesError && (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-3">
+                <p className="text-sm text-red-600 dark:text-red-400">
+                  {musclesError.message}
+                </p>
+              </div>
+            )}
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={closeDeleteModal}
+                disabled={deleteState === 'deleting'}
+                className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium
+                  hover:bg-slate-50 dark:hover:bg-slate-700 transition-all
+                  disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {t('cancel', { postProcess: 'capitalize' })}
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={deleteState === 'deleting'}
+                className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white font-medium
+                  hover:from-red-600 hover:to-red-700 transition-all shadow-lg shadow-red-500/30
+                  disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {deleteState === 'deleting'
+                  ? t('deleting', { postProcess: 'capitalize' })
+                  : t('delete', { postProcess: 'capitalize' })}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   if (musclesState === 'loading') {
     return (
       <Layout>
@@ -204,25 +296,46 @@ export const MuscleDetailPage: FC = () => {
               {muscle.name}
             </h1>
           </div>
-          <button
-            onClick={openEditModal}
-            className="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
-            title={t('editMuscle', { postProcess: 'capitalize' })}
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          <div className="flex items-center gap-1">
+            <button
+              onClick={openEditModal}
+              className="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+              title={t('editMuscle', { postProcess: 'capitalize' })}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-              />
-            </svg>
-          </button>
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                />
+              </svg>
+            </button>
+            <button
+              onClick={openDeleteModal}
+              className="p-2 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+              title={t('deleteMuscle', { postProcess: 'capitalize' })}
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </Layout.Header>
 
@@ -254,6 +367,7 @@ export const MuscleDetailPage: FC = () => {
       </Layout.Content>
 
       {renderEditModal()}
+      {renderDeleteModal()}
     </Layout>
   )
 }
