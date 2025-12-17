@@ -62,4 +62,7 @@ export interface Lang {
   editMuscle: string
   updating: string
   save: string
+  // Detail page
+  back: string
+  createdAt: string
 }
