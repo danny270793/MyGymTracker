@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { musclesActions, musclesSelector } from '../slices/muscles-slice'
+import { exercisesActions, exercisesSelector } from '../slices/exercises-slice'
 import { Layout } from '../components/stateless/layout.tsx'
 import { useRouter } from '../hooks/use-router'
 import type { Muscle } from '../services/backend'
@@ -23,6 +24,11 @@ export const MuscleDetailPage: FC = () => {
   const musclesError = musclesSelector('error')
   const updateState = musclesSelector('updateState')
   const deleteState = musclesSelector('deleteState')
+
+  const exercises = exercisesSelector('exercises')
+  const exercisesState = exercisesSelector('state')
+  const exercisesError = exercisesSelector('error')
+  const currentMuscleId = exercisesSelector('currentMuscleId')
 
   const muscle: Muscle | undefined = muscles.find((m) => m.id === Number(id))
 
@@ -46,6 +52,13 @@ export const MuscleDetailPage: FC = () => {
       dispatch(musclesActions.fetchRequested())
     }
   }, [musclesState, dispatch])
+
+  useEffect(() => {
+    const muscleId = Number(id)
+    if (muscle && currentMuscleId !== muscleId) {
+      dispatch(exercisesActions.fetchRequested({ muscleId }))
+    }
+  }, [muscle, id, currentMuscleId, dispatch])
 
   useEffect(() => {
     if (updateState === 'success') {
@@ -340,7 +353,7 @@ export const MuscleDetailPage: FC = () => {
       </Layout.Header>
 
       <Layout.Content className="p-4 bg-slate-50 dark:bg-slate-900">
-        <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 mb-4">
           <div className="flex items-center mb-6">
             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-2xl">
               {muscle.name.charAt(0).toUpperCase()}
@@ -363,6 +376,57 @@ export const MuscleDetailPage: FC = () => {
               {new Date(muscle.created_at).toLocaleDateString()}
             </p>
           </div>
+        </div>
+
+        {/* Exercises Section */}
+        <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
+          <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4">
+            {t('exercises', { postProcess: 'capitalize' })}
+          </h3>
+
+          {exercisesState === 'loading' && (
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-emerald-500"></div>
+              <span className="ml-3 text-slate-600 dark:text-slate-400">
+                {t('loading', { postProcess: 'capitalize' })}
+              </span>
+            </div>
+          )}
+
+          {exercisesState === 'error' && exercisesError && (
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+              <p className="text-red-600 dark:text-red-400">
+                {t('errorLoadingData', { postProcess: 'capitalize' })}:{' '}
+                {exercisesError.message}
+              </p>
+            </div>
+          )}
+
+          {exercisesState === 'success' && exercises.length === 0 && (
+            <div className="text-center py-8 text-slate-500 dark:text-slate-400">
+              {t('noExercises', { postProcess: 'capitalize' })}
+            </div>
+          )}
+
+          {exercisesState === 'success' && exercises.length > 0 && (
+            <div className="space-y-3">
+              {exercises.map((exercise) => (
+                <div
+                  key={exercise.id}
+                  className="flex items-center p-4 bg-slate-50 dark:bg-slate-700 rounded-xl"
+                >
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold text-lg">
+                    {exercise.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="ml-3">
+                    <p className="font-semibold text-slate-800 dark:text-white">
+                      {exercise.name}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </Layout.Content>
 
