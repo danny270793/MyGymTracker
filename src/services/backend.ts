@@ -13,6 +13,13 @@ export interface Muscle {
   created_at: string
 }
 
+export interface Exercise {
+  id: number
+  name: string
+  muscle_id: number
+  created_at: string
+}
+
 /**
  * Maps Supabase error messages to i18n keys
  */
@@ -125,6 +132,19 @@ export const backend = {
     if (error) {
       throw new Error(error.message)
     }
+  },
+
+  getExercisesByMuscle: async (muscleId: number): Promise<Exercise[]> => {
+    const { data, error } = await supabase
+      .from('Exercises')
+      .select('*')
+      .eq('muscle_id', muscleId)
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
+    return data as Exercise[]
   },
 }
 
