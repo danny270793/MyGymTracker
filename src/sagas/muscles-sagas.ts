@@ -1,7 +1,8 @@
 import { call, put, takeLatest, type ForkEffect } from 'redux-saga/effects'
-import { musclesActions } from '../slices/muscles-slice'
+import { musclesActions, type CreateMusclePayload } from '../slices/muscles-slice'
 import { backend, type Muscle } from '../services/backend'
 import { Logger } from '../utils/logger'
+import type { PayloadAction } from '@reduxjs/toolkit'
 
 const logger = new Logger('./src/sagas/muscles-sagas.ts')
 
@@ -17,7 +18,20 @@ function* fetchMusclesSaga() {
   }
 }
 
+function* createMuscleSaga(action: PayloadAction<CreateMusclePayload>) {
+  try {
+    logger.debug(`creating muscle: ${action.payload.name}`)
+    const muscle: Muscle = yield call(backend.createMuscle, action.payload.name)
+    logger.debug(`muscle created: ${muscle.id}`)
+    yield put(musclesActions.createSuccess(muscle))
+  } catch (error) {
+    logger.error('create muscle error', error)
+    yield put(musclesActions.createError(error as Error))
+  }
+}
+
 export const musclesSagas: ForkEffect[] = [
   takeLatest(musclesActions.fetchRequested.type, fetchMusclesSaga),
+  takeLatest(musclesActions.createRequested.type, createMuscleSaga),
 ]
 
