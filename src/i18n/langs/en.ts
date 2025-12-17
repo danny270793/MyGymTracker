@@ -77,4 +77,8 @@ export const en: Lang = {
   // Exercises
   exercises: 'exercises',
   noExercises: 'no exercises yet',
+  createExercise: 'create exercise',
+  exerciseName: 'name',
+  exerciseNamePlaceholder: 'enter exercise name',
+  exerciseNameRequired: 'exercise name is required',
 }
