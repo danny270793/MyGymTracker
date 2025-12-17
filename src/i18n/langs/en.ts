@@ -74,4 +74,7 @@ export const en: Lang = {
   deleteConfirmMessage: 'are you sure you want to delete this muscle? this action cannot be undone.',
   deleting: 'deleting...',
   delete: 'delete',
+  // Exercises
+  exercises: 'exercises',
+  noExercises: 'no exercises yet',
 }
