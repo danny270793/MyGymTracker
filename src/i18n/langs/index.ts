@@ -79,4 +79,6 @@ export interface Lang {
   exerciseNamePlaceholder: string
   exerciseNameRequired: string
   editExercise: string
+  deleteExercise: string
+  deleteExerciseConfirmMessage: string
 }
