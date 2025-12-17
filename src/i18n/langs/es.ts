@@ -74,4 +74,7 @@ export const es: Lang = {
   deleteConfirmMessage: '¿estás seguro de que deseas eliminar este músculo? esta acción no se puede deshacer.',
   deleting: 'eliminando...',
   delete: 'eliminar',
+  // Exercises
+  exercises: 'ejercicios',
+  noExercises: 'aún no hay ejercicios',
 }
