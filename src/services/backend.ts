@@ -175,5 +175,13 @@ export const backend = {
 
     return data as Exercise
   },
+
+  deleteExercise: async (id: number): Promise<void> => {
+    const { error } = await supabase.from('Exercises').delete().eq('id', id)
+
+    if (error) {
+      throw new Error(error.message)
+    }
+  },
 }
 
