@@ -160,5 +160,20 @@ export const backend = {
 
     return data as Exercise
   },
+
+  updateExercise: async (id: number, name: string): Promise<Exercise> => {
+    const { data, error } = await supabase
+      .from('Exercises')
+      .update({ name })
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
+    return data as Exercise
+  },
 }
 
