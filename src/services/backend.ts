@@ -118,5 +118,13 @@ export const backend = {
 
     return data as Muscle
   },
+
+  deleteMuscle: async (id: number): Promise<void> => {
+    const { error } = await supabase.from('Muscles').delete().eq('id', id)
+
+    if (error) {
+      throw new Error(error.message)
+    }
+  },
 }
 
