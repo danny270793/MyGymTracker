@@ -61,4 +61,8 @@ export const es: Lang = {
   creating: 'creando...',
   cancel: 'cancelar',
   create: 'crear',
+  // Edit muscle
+  editMuscle: 'editar músculo',
+  updating: 'actualizando...',
+  save: 'guardar',
 }
