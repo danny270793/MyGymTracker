@@ -50,4 +50,12 @@ export interface Lang {
   loading: string
   noDataFound: string
   errorLoadingData: string
+  // Create muscle
+  createMuscle: string
+  muscleName: string
+  muscleNamePlaceholder: string
+  muscleNameRequired: string
+  creating: string
+  cancel: string
+  create: string
 }
