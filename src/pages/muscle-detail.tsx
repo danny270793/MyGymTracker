@@ -18,6 +18,7 @@ export const MuscleDetailPage: FC = () => {
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isCreateExerciseModalOpen, setIsCreateExerciseModalOpen] = useState(false)
 
   const muscles = musclesSelector('muscles')
   const musclesState = musclesSelector('state')
@@ -29,11 +30,16 @@ export const MuscleDetailPage: FC = () => {
   const exercisesState = exercisesSelector('state')
   const exercisesError = exercisesSelector('error')
   const currentMuscleId = exercisesSelector('currentMuscleId')
+  const createExerciseState = exercisesSelector('createState')
 
   const muscle: Muscle | undefined = muscles.find((m) => m.id === Number(id))
 
   const muscleSchema = Yup.object().shape({
     name: Yup.string().required(t('muscleNameRequired')),
+  })
+
+  const exerciseSchema = Yup.object().shape({
+    name: Yup.string().required(t('exerciseNameRequired')),
   })
 
   const editFormik = useFormik({
@@ -43,6 +49,16 @@ export const MuscleDetailPage: FC = () => {
     onSubmit: (values) => {
       if (muscle) {
         dispatch(musclesActions.updateRequested({ id: muscle.id, name: values.name }))
+      }
+    },
+  })
+
+  const createExerciseFormik = useFormik({
+    initialValues: { name: '' },
+    validationSchema: exerciseSchema,
+    onSubmit: (values) => {
+      if (muscle) {
+        dispatch(exercisesActions.createRequested({ name: values.name, muscleId: muscle.id }))
       }
     },
   })
@@ -75,6 +91,14 @@ export const MuscleDetailPage: FC = () => {
     }
   }, [deleteState, dispatch, router])
 
+  useEffect(() => {
+    if (createExerciseState === 'success') {
+      setIsCreateExerciseModalOpen(false)
+      createExerciseFormik.resetForm()
+      dispatch(exercisesActions.resetCreateState())
+    }
+  }, [createExerciseState, dispatch])
+
   const openEditModal = () => {
     editFormik.setFieldValue('name', muscle?.name || '')
     setIsEditModalOpen(true)
@@ -101,6 +125,18 @@ export const MuscleDetailPage: FC = () => {
     if (muscle) {
       dispatch(musclesActions.deleteRequested({ id: muscle.id }))
     }
+  }
+
+  const openCreateExerciseModal = () => {
+    createExerciseFormik.resetForm()
+    setIsCreateExerciseModalOpen(true)
+    dispatch(exercisesActions.resetCreateState())
+  }
+
+  const closeCreateExerciseModal = () => {
+    setIsCreateExerciseModalOpen(false)
+    createExerciseFormik.resetForm()
+    dispatch(exercisesActions.resetCreateState())
   }
 
   const renderEditModal = () => {
@@ -249,6 +285,86 @@ export const MuscleDetailPage: FC = () => {
     )
   }
 
+  const renderCreateExerciseModal = () => {
+    if (!isCreateExerciseModalOpen || !muscle) return null
+
+    return (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md animate-in fade-in zoom-in duration-200">
+          <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+            <h2 className="text-xl font-bold text-slate-800 dark:text-white">
+              {t('createExercise', { postProcess: 'capitalize' })}
+            </h2>
+          </div>
+
+          <form onSubmit={createExerciseFormik.handleSubmit} className="p-6 space-y-4">
+            <div>
+              <label
+                htmlFor="exercise-name"
+                className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+              >
+                {t('exerciseName', { postProcess: 'capitalize' })}
+              </label>
+              <input
+                id="exercise-name"
+                name="name"
+                type="text"
+                placeholder={t('exerciseNamePlaceholder')}
+                value={createExerciseFormik.values.name}
+                onChange={createExerciseFormik.handleChange}
+                onBlur={createExerciseFormik.handleBlur}
+                disabled={createExerciseState === 'creating'}
+                className={`w-full px-4 py-3 rounded-xl border bg-white dark:bg-slate-900 text-slate-800 dark:text-white placeholder-slate-400
+                  focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all
+                  ${
+                    createExerciseFormik.touched.name && createExerciseFormik.errors.name
+                      ? 'border-red-500'
+                      : 'border-slate-200 dark:border-slate-700'
+                  }
+                  ${createExerciseState === 'creating' ? 'opacity-50' : ''}`}
+              />
+              {createExerciseFormik.touched.name && createExerciseFormik.errors.name && (
+                <p className="mt-2 text-sm text-red-500">{createExerciseFormik.errors.name}</p>
+              )}
+            </div>
+
+            {createExerciseState === 'error' && exercisesError && (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-3">
+                <p className="text-sm text-red-600 dark:text-red-400">
+                  {exercisesError.message}
+                </p>
+              </div>
+            )}
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={closeCreateExerciseModal}
+                disabled={createExerciseState === 'creating'}
+                className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium
+                  hover:bg-slate-50 dark:hover:bg-slate-700 transition-all
+                  disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {t('cancel', { postProcess: 'capitalize' })}
+              </button>
+              <button
+                type="submit"
+                disabled={createExerciseState === 'creating'}
+                className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-medium
+                  hover:from-blue-600 hover:to-indigo-600 transition-all shadow-lg shadow-blue-500/30
+                  disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {createExerciseState === 'creating'
+                  ? t('creating', { postProcess: 'capitalize' })
+                  : t('create', { postProcess: 'capitalize' })}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )
+  }
+
   if (musclesState === 'loading') {
     return (
       <Layout>
@@ -380,9 +496,20 @@ export const MuscleDetailPage: FC = () => {
 
         {/* Exercises Section */}
         <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-          <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4">
-            {t('exercises', { postProcess: 'capitalize' })}
-          </h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-bold text-slate-800 dark:text-white">
+              {t('exercises', { postProcess: 'capitalize' })}
+            </h3>
+            <button
+              onClick={openCreateExerciseModal}
+              className="p-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-500 text-white hover:from-blue-600 hover:to-indigo-600 transition-all shadow-lg shadow-blue-500/30"
+              title={t('createExercise', { postProcess: 'capitalize' })}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+          </div>
 
           {exercisesState === 'loading' && (
             <div className="flex items-center justify-center py-8">
@@ -432,6 +559,7 @@ export const MuscleDetailPage: FC = () => {
 
       {renderEditModal()}
       {renderDeleteModal()}
+      {renderCreateExerciseModal()}
     </Layout>
   )
 }
