@@ -82,4 +82,6 @@ export const es: Lang = {
   exerciseNamePlaceholder: 'ingresa el nombre del ejercicio',
   exerciseNameRequired: 'el nombre del ejercicio es requerido',
   editExercise: 'editar ejercicio',
+  deleteExercise: 'eliminar ejercicio',
+  deleteExerciseConfirmMessage: '¿estás seguro de que deseas eliminar este ejercicio? esta acción no se puede deshacer.',
 }
