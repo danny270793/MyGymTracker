@@ -3,6 +3,7 @@ import {
   exercisesActions,
   type FetchExercisesPayload,
   type CreateExercisePayload,
+  type UpdateExercisePayload,
 } from '../slices/exercises-slice'
 import { backend, type Exercise } from '../services/backend'
 import { Logger } from '../utils/logger'
@@ -41,8 +42,25 @@ function* createExerciseSaga(action: PayloadAction<CreateExercisePayload>) {
   }
 }
 
+function* updateExerciseSaga(action: PayloadAction<UpdateExercisePayload>) {
+  try {
+    logger.debug(`updating exercise: ${action.payload.id}`)
+    const exercise: Exercise = yield call(
+      backend.updateExercise,
+      action.payload.id,
+      action.payload.name,
+    )
+    logger.debug(`exercise updated: ${exercise.id}`)
+    yield put(exercisesActions.updateSuccess(exercise))
+  } catch (error) {
+    logger.error('update exercise error', error)
+    yield put(exercisesActions.updateError(error as Error))
+  }
+}
+
 export const exercisesSagas: ForkEffect[] = [
   takeLatest(exercisesActions.fetchRequested.type, fetchExercisesSaga),
   takeLatest(exercisesActions.createRequested.type, createExerciseSaga),
+  takeLatest(exercisesActions.updateRequested.type, updateExerciseSaga),
 ]
 
