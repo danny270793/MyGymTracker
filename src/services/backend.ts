@@ -103,5 +103,20 @@ export const backend = {
 
     return data as Muscle
   },
+
+  updateMuscle: async (id: number, name: string): Promise<Muscle> => {
+    const { data, error } = await supabase
+      .from('Muscles')
+      .update({ name })
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
+    return data as Muscle
+  },
 }
 
