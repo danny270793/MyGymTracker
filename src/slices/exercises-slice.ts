@@ -12,11 +12,17 @@ export interface CreateExercisePayload {
   muscleId: number
 }
 
+export interface UpdateExercisePayload {
+  id: number
+  name: string
+}
+
 export interface ExercisesState {
   exercises: Exercise[]
   currentMuscleId: number | null
   state: 'idle' | 'loading' | 'success' | 'error'
   createState: 'idle' | 'creating' | 'success' | 'error'
+  updateState: 'idle' | 'updating' | 'success' | 'error'
   error: Error | null
 }
 
@@ -25,6 +31,7 @@ const initialState: ExercisesState = {
   currentMuscleId: null,
   state: 'idle',
   createState: 'idle',
+  updateState: 'idle',
   error: null,
 }
 
@@ -69,11 +76,35 @@ export const exercisesSlice = createSlice({
       state.createState = 'idle'
       state.error = null
     },
+    updateRequested: (
+      state: ExercisesState,
+      _action: PayloadAction<UpdateExercisePayload>,
+    ) => {
+      state.updateState = 'updating'
+      state.error = null
+    },
+    updateSuccess: (state: ExercisesState, action: PayloadAction<Exercise>) => {
+      state.updateState = 'success'
+      const index = state.exercises.findIndex((e) => e.id === action.payload.id)
+      if (index !== -1) {
+        state.exercises[index] = action.payload
+      }
+      state.error = null
+    },
+    updateError: (state: ExercisesState, action: PayloadAction<Error>) => {
+      state.updateState = 'error'
+      state.error = action.payload
+    },
+    resetUpdateState: (state: ExercisesState) => {
+      state.updateState = 'idle'
+      state.error = null
+    },
     reset: (state: ExercisesState) => {
       state.exercises = []
       state.currentMuscleId = null
       state.state = 'idle'
       state.createState = 'idle'
+      state.updateState = 'idle'
       state.error = null
     },
   },
