@@ -58,4 +58,8 @@ export interface Lang {
   creating: string
   cancel: string
   create: string
+  // Edit muscle
+  editMuscle: string
+  updating: string
+  save: string
 }
