@@ -12,11 +12,16 @@ export interface UpdateMusclePayload {
   name: string
 }
 
+export interface DeleteMusclePayload {
+  id: number
+}
+
 export interface MusclesState {
   muscles: Muscle[]
   state: 'idle' | 'loading' | 'success' | 'error'
   createState: 'idle' | 'creating' | 'success' | 'error'
   updateState: 'idle' | 'updating' | 'success' | 'error'
+  deleteState: 'idle' | 'deleting' | 'success' | 'error'
   error: Error | null
 }
 
@@ -25,6 +30,7 @@ const initialState: MusclesState = {
   state: 'idle',
   createState: 'idle',
   updateState: 'idle',
+  deleteState: 'idle',
   error: null,
 }
 
@@ -88,11 +94,32 @@ export const musclesSlice = createSlice({
       state.updateState = 'idle'
       state.error = null
     },
+    deleteRequested: (
+      state: MusclesState,
+      _action: PayloadAction<DeleteMusclePayload>,
+    ) => {
+      state.deleteState = 'deleting'
+      state.error = null
+    },
+    deleteSuccess: (state: MusclesState, action: PayloadAction<number>) => {
+      state.deleteState = 'success'
+      state.muscles = state.muscles.filter((m) => m.id !== action.payload)
+      state.error = null
+    },
+    deleteError: (state: MusclesState, action: PayloadAction<Error>) => {
+      state.deleteState = 'error'
+      state.error = action.payload
+    },
+    resetDeleteState: (state: MusclesState) => {
+      state.deleteState = 'idle'
+      state.error = null
+    },
     reset: (state: MusclesState) => {
       state.muscles = []
       state.state = 'idle'
       state.createState = 'idle'
       state.updateState = 'idle'
+      state.deleteState = 'idle'
       state.error = null
     },
   },
