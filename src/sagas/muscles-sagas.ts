@@ -3,6 +3,7 @@ import {
   musclesActions,
   type CreateMusclePayload,
   type UpdateMusclePayload,
+  type DeleteMusclePayload,
 } from '../slices/muscles-slice'
 import { backend, type Muscle } from '../services/backend'
 import { Logger } from '../utils/logger'
@@ -50,9 +51,22 @@ function* updateMuscleSaga(action: PayloadAction<UpdateMusclePayload>) {
   }
 }
 
+function* deleteMuscleSaga(action: PayloadAction<DeleteMusclePayload>) {
+  try {
+    logger.debug(`deleting muscle: ${action.payload.id}`)
+    yield call(backend.deleteMuscle, action.payload.id)
+    logger.debug(`muscle deleted: ${action.payload.id}`)
+    yield put(musclesActions.deleteSuccess(action.payload.id))
+  } catch (error) {
+    logger.error('delete muscle error', error)
+    yield put(musclesActions.deleteError(error as Error))
+  }
+}
+
 export const musclesSagas: ForkEffect[] = [
   takeLatest(musclesActions.fetchRequested.type, fetchMusclesSaga),
   takeLatest(musclesActions.createRequested.type, createMuscleSaga),
   takeLatest(musclesActions.updateRequested.type, updateMuscleSaga),
+  takeLatest(musclesActions.deleteRequested.type, deleteMuscleSaga),
 ]
 
