@@ -74,4 +74,8 @@ export interface Lang {
   // Exercises
   exercises: string
   noExercises: string
+  createExercise: string
+  exerciseName: string
+  exerciseNamePlaceholder: string
+  exerciseNameRequired: string
 }
