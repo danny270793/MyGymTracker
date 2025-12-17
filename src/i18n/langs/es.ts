@@ -53,4 +53,12 @@ export const es: Lang = {
   loading: 'cargando...',
   noDataFound: 'no se encontraron datos',
   errorLoadingData: 'error al cargar datos',
+  // Create muscle
+  createMuscle: 'crear músculo',
+  muscleName: 'nombre',
+  muscleNamePlaceholder: 'ingresa el nombre del músculo',
+  muscleNameRequired: 'el nombre del músculo es requerido',
+  creating: 'creando...',
+  cancel: 'cancelar',
+  create: 'crear',
 }
