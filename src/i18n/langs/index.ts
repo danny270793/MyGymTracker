@@ -65,4 +65,10 @@ export interface Lang {
   // Detail page
   back: string
   createdAt: string
+  // Delete muscle
+  deleteMuscle: string
+  deleteConfirmTitle: string
+  deleteConfirmMessage: string
+  deleting: string
+  delete: string
 }
