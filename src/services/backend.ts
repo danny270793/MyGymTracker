@@ -146,5 +146,19 @@ export const backend = {
 
     return data as Exercise[]
   },
+
+  createExercise: async (name: string, muscleId: number): Promise<Exercise> => {
+    const { data, error } = await supabase
+      .from('Exercises')
+      .insert({ name, muscle_id: muscleId })
+      .select()
+      .single()
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
+    return data as Exercise
+  },
 }
 
