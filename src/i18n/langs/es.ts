@@ -65,4 +65,7 @@ export const es: Lang = {
   editMuscle: 'editar músculo',
   updating: 'actualizando...',
   save: 'guardar',
+  // Detail page
+  back: 'volver',
+  createdAt: 'creado el',
 }
