@@ -4,6 +4,7 @@ import {
   type FetchExercisesPayload,
   type CreateExercisePayload,
   type UpdateExercisePayload,
+  type DeleteExercisePayload,
 } from '../slices/exercises-slice'
 import { backend, type Exercise } from '../services/backend'
 import { Logger } from '../utils/logger'
@@ -58,9 +59,22 @@ function* updateExerciseSaga(action: PayloadAction<UpdateExercisePayload>) {
   }
 }
 
+function* deleteExerciseSaga(action: PayloadAction<DeleteExercisePayload>) {
+  try {
+    logger.debug(`deleting exercise: ${action.payload.id}`)
+    yield call(backend.deleteExercise, action.payload.id)
+    logger.debug(`exercise deleted: ${action.payload.id}`)
+    yield put(exercisesActions.deleteSuccess(action.payload.id))
+  } catch (error) {
+    logger.error('delete exercise error', error)
+    yield put(exercisesActions.deleteError(error as Error))
+  }
+}
+
 export const exercisesSagas: ForkEffect[] = [
   takeLatest(exercisesActions.fetchRequested.type, fetchExercisesSaga),
   takeLatest(exercisesActions.createRequested.type, createExerciseSaga),
   takeLatest(exercisesActions.updateRequested.type, updateExerciseSaga),
+  takeLatest(exercisesActions.deleteRequested.type, deleteExerciseSaga),
 ]
 
