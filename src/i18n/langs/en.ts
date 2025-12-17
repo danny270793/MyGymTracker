@@ -68,4 +68,10 @@ export const en: Lang = {
   // Detail page
   back: 'back',
   createdAt: 'created at',
+  // Delete muscle
+  deleteMuscle: 'delete muscle',
+  deleteConfirmTitle: 'confirm deletion',
+  deleteConfirmMessage: 'are you sure you want to delete this muscle? this action cannot be undone.',
+  deleting: 'deleting...',
+  delete: 'delete',
 }
