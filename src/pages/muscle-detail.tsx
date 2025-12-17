@@ -20,6 +20,7 @@ export const MuscleDetailPage: FC = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isCreateExerciseModalOpen, setIsCreateExerciseModalOpen] = useState(false)
   const [isEditExerciseModalOpen, setIsEditExerciseModalOpen] = useState(false)
+  const [isDeleteExerciseModalOpen, setIsDeleteExerciseModalOpen] = useState(false)
   const [editingExercise, setEditingExercise] = useState<Exercise | null>(null)
 
   const muscles = musclesSelector('muscles')
@@ -34,6 +35,7 @@ export const MuscleDetailPage: FC = () => {
   const currentMuscleId = exercisesSelector('currentMuscleId')
   const createExerciseState = exercisesSelector('createState')
   const updateExerciseState = exercisesSelector('updateState')
+  const deleteExerciseState = exercisesSelector('deleteState')
 
   const muscle: Muscle | undefined = muscles.find((m) => m.id === Number(id))
 
@@ -122,6 +124,14 @@ export const MuscleDetailPage: FC = () => {
     }
   }, [updateExerciseState, dispatch])
 
+  useEffect(() => {
+    if (deleteExerciseState === 'success') {
+      setIsDeleteExerciseModalOpen(false)
+      setEditingExercise(null)
+      dispatch(exercisesActions.resetDeleteState())
+    }
+  }, [deleteExerciseState, dispatch])
+
   const openEditModal = () => {
     editFormik.setFieldValue('name', muscle?.name || '')
     setIsEditModalOpen(true)
@@ -174,6 +184,24 @@ export const MuscleDetailPage: FC = () => {
     setEditingExercise(null)
     editExerciseFormik.resetForm()
     dispatch(exercisesActions.resetUpdateState())
+  }
+
+  const openDeleteExerciseModal = () => {
+    setIsEditExerciseModalOpen(false)
+    setIsDeleteExerciseModalOpen(true)
+    dispatch(exercisesActions.resetDeleteState())
+  }
+
+  const closeDeleteExerciseModal = () => {
+    setIsDeleteExerciseModalOpen(false)
+    setEditingExercise(null)
+    dispatch(exercisesActions.resetDeleteState())
+  }
+
+  const handleDeleteExercise = () => {
+    if (editingExercise) {
+      dispatch(exercisesActions.deleteRequested({ id: editingExercise.id }))
+    }
   }
 
   const renderEditModal = () => {
@@ -408,10 +436,21 @@ export const MuscleDetailPage: FC = () => {
     return (
       <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md animate-in fade-in zoom-in duration-200">
-          <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+          <div className="p-6 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
             <h2 className="text-xl font-bold text-slate-800 dark:text-white">
               {t('editExercise', { postProcess: 'capitalize' })}
             </h2>
+            <button
+              type="button"
+              onClick={openDeleteExerciseModal}
+              disabled={updateExerciseState === 'updating'}
+              className="p-2 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50"
+              title={t('deleteExercise', { postProcess: 'capitalize' })}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
           </div>
 
           <form onSubmit={editExerciseFormik.handleSubmit} className="p-6 space-y-4">
@@ -477,6 +516,72 @@ export const MuscleDetailPage: FC = () => {
               </button>
             </div>
           </form>
+        </div>
+      </div>
+    )
+  }
+
+  const renderDeleteExerciseModal = () => {
+    if (!isDeleteExerciseModalOpen || !editingExercise) return null
+
+    return (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md animate-in fade-in zoom-in duration-200">
+          <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+            <h2 className="text-xl font-bold text-slate-800 dark:text-white">
+              {t('deleteConfirmTitle', { postProcess: 'capitalize' })}
+            </h2>
+          </div>
+
+          <div className="p-6 space-y-4">
+            <p className="text-slate-600 dark:text-slate-400">
+              {t('deleteExerciseConfirmMessage', { postProcess: 'capitalize' })}
+            </p>
+
+            <div className="flex items-center p-4 bg-slate-100 dark:bg-slate-700 rounded-xl">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold text-lg">
+                {editingExercise.name.charAt(0).toUpperCase()}
+              </div>
+              <div className="ml-3">
+                <p className="font-semibold text-slate-800 dark:text-white">
+                  {editingExercise.name}
+                </p>
+              </div>
+            </div>
+
+            {deleteExerciseState === 'error' && exercisesError && (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-3">
+                <p className="text-sm text-red-600 dark:text-red-400">
+                  {exercisesError.message}
+                </p>
+              </div>
+            )}
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={closeDeleteExerciseModal}
+                disabled={deleteExerciseState === 'deleting'}
+                className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium
+                  hover:bg-slate-50 dark:hover:bg-slate-700 transition-all
+                  disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {t('cancel', { postProcess: 'capitalize' })}
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteExercise}
+                disabled={deleteExerciseState === 'deleting'}
+                className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white font-medium
+                  hover:from-red-600 hover:to-red-700 transition-all shadow-lg shadow-red-500/30
+                  disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {deleteExerciseState === 'deleting'
+                  ? t('deleting', { postProcess: 'capitalize' })
+                  : t('delete', { postProcess: 'capitalize' })}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -692,6 +797,7 @@ export const MuscleDetailPage: FC = () => {
       {renderDeleteModal()}
       {renderCreateExerciseModal()}
       {renderEditExerciseModal()}
+      {renderDeleteExerciseModal()}
     </Layout>
   )
 }
