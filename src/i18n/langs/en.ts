@@ -81,4 +81,5 @@ export const en: Lang = {
   exerciseName: 'name',
   exerciseNamePlaceholder: 'enter exercise name',
   exerciseNameRequired: 'exercise name is required',
+  editExercise: 'edit exercise',
 }
