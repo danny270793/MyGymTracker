@@ -7,20 +7,19 @@ import { authActions, authSelector } from '../slices/auth-slice'
 import { musclesActions, musclesSelector } from '../slices/muscles-slice'
 import { useTheme } from '../contexts/use-theme.tsx'
 import { Layout } from '../components/stateless/layout.tsx'
-import type { Muscle } from '../services/backend'
+import { useRouter } from '../hooks/use-router'
 
 type SidebarOption = 'muscles'
 
 export const HomePage: FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const router = useRouter()
   const { theme, setTheme } = useTheme()
 
   const [selectedOption, setSelectedOption] = useState<SidebarOption>('muscles')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [editingMuscle, setEditingMuscle] = useState<Muscle | null>(null)
 
   const authState = authSelector('state')
   const authError = authSelector('error')
@@ -31,7 +30,6 @@ export const HomePage: FC = () => {
   const musclesState = musclesSelector('state')
   const musclesError = musclesSelector('error')
   const createState = musclesSelector('createState')
-  const updateState = musclesSelector('updateState')
 
   const muscleSchema = Yup.object().shape({
     name: Yup.string().required(t('muscleNameRequired')),
@@ -42,19 +40,6 @@ export const HomePage: FC = () => {
     validationSchema: muscleSchema,
     onSubmit: (values) => {
       dispatch(musclesActions.createRequested({ name: values.name }))
-    },
-  })
-
-  const editFormik = useFormik({
-    initialValues: { name: '' },
-    validationSchema: muscleSchema,
-    enableReinitialize: true,
-    onSubmit: (values) => {
-      if (editingMuscle) {
-        dispatch(
-          musclesActions.updateRequested({ id: editingMuscle.id, name: values.name }),
-        )
-      }
     },
   })
 
@@ -71,15 +56,6 @@ export const HomePage: FC = () => {
       dispatch(musclesActions.resetCreateState())
     }
   }, [createState, dispatch, createFormik])
-
-  useEffect(() => {
-    if (updateState === 'success') {
-      setIsEditModalOpen(false)
-      setEditingMuscle(null)
-      editFormik.resetForm()
-      dispatch(musclesActions.resetUpdateState())
-    }
-  }, [updateState, dispatch, editFormik])
 
   const onLogoutClicked = () => {
     dispatch(authActions.logoutRequested())
@@ -98,20 +74,6 @@ export const HomePage: FC = () => {
     setIsCreateModalOpen(false)
     createFormik.resetForm()
     dispatch(musclesActions.resetCreateState())
-  }
-
-  const openEditModal = (muscle: Muscle) => {
-    setEditingMuscle(muscle)
-    editFormik.setFieldValue('name', muscle.name)
-    setIsEditModalOpen(true)
-    dispatch(musclesActions.resetUpdateState())
-  }
-
-  const closeEditModal = () => {
-    setIsEditModalOpen(false)
-    setEditingMuscle(null)
-    editFormik.resetForm()
-    dispatch(musclesActions.resetUpdateState())
   }
 
   const renderCreateModal = () => {
@@ -194,86 +156,6 @@ export const HomePage: FC = () => {
     )
   }
 
-  const renderEditModal = () => {
-    if (!isEditModalOpen || !editingMuscle) return null
-
-    return (
-      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md animate-in fade-in zoom-in duration-200">
-          <div className="p-6 border-b border-slate-200 dark:border-slate-700">
-            <h2 className="text-xl font-bold text-slate-800 dark:text-white">
-              {t('editMuscle', { postProcess: 'capitalize' })}
-            </h2>
-          </div>
-
-          <form onSubmit={editFormik.handleSubmit} className="p-6 space-y-4">
-            <div>
-              <label
-                htmlFor="edit-name"
-                className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
-              >
-                {t('muscleName', { postProcess: 'capitalize' })}
-              </label>
-              <input
-                id="edit-name"
-                name="name"
-                type="text"
-                placeholder={t('muscleNamePlaceholder')}
-                value={editFormik.values.name}
-                onChange={editFormik.handleChange}
-                onBlur={editFormik.handleBlur}
-                disabled={updateState === 'updating'}
-                className={`w-full px-4 py-3 rounded-xl border bg-white dark:bg-slate-900 text-slate-800 dark:text-white placeholder-slate-400
-                  focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all
-                  ${
-                    editFormik.touched.name && editFormik.errors.name
-                      ? 'border-red-500'
-                      : 'border-slate-200 dark:border-slate-700'
-                  }
-                  ${updateState === 'updating' ? 'opacity-50' : ''}`}
-              />
-              {editFormik.touched.name && editFormik.errors.name && (
-                <p className="mt-2 text-sm text-red-500">{editFormik.errors.name}</p>
-              )}
-            </div>
-
-            {updateState === 'error' && musclesError && (
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-3">
-                <p className="text-sm text-red-600 dark:text-red-400">
-                  {musclesError.message}
-                </p>
-              </div>
-            )}
-
-            <div className="flex gap-3 pt-2">
-              <button
-                type="button"
-                onClick={closeEditModal}
-                disabled={updateState === 'updating'}
-                className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium
-                  hover:bg-slate-50 dark:hover:bg-slate-700 transition-all
-                  disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {t('cancel', { postProcess: 'capitalize' })}
-              </button>
-              <button
-                type="submit"
-                disabled={updateState === 'updating'}
-                className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-medium
-                  hover:from-emerald-600 hover:to-teal-600 transition-all shadow-lg shadow-emerald-500/30
-                  disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {updateState === 'updating'
-                  ? t('updating', { postProcess: 'capitalize' })
-                  : t('save', { postProcess: 'capitalize' })}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    )
-  }
-
   const renderContent = () => {
     switch (selectedOption) {
       case 'muscles':
@@ -304,7 +186,7 @@ export const HomePage: FC = () => {
               muscles.map((muscle) => (
                 <div
                   key={muscle.id}
-                  onClick={() => openEditModal(muscle)}
+                  onClick={() => router.goToMuscleDetail(muscle.id)}
                   className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md transition-shadow cursor-pointer"
                 >
                   <div className="flex items-center">
@@ -316,7 +198,7 @@ export const HomePage: FC = () => {
                         {muscle.name}
                       </h3>
                     </div>
-                    <div className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <div className="text-slate-400">
                       <svg
                         className="w-5 h-5"
                         fill="none"
@@ -327,7 +209,7 @@ export const HomePage: FC = () => {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          d="M9 5l7 7-7 7"
                         />
                       </svg>
                     </div>
@@ -505,9 +387,6 @@ export const HomePage: FC = () => {
 
       {/* Create Muscle Modal */}
       {renderCreateModal()}
-
-      {/* Edit Muscle Modal */}
-      {renderEditModal()}
     </Layout>
   )
 }
