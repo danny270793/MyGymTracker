@@ -82,4 +82,6 @@ export const en: Lang = {
   exerciseNamePlaceholder: 'enter exercise name',
   exerciseNameRequired: 'exercise name is required',
   editExercise: 'edit exercise',
+  deleteExercise: 'delete exercise',
+  deleteExerciseConfirmMessage: 'are you sure you want to delete this exercise? this action cannot be undone.',
 }
