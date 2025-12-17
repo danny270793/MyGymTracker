@@ -71,4 +71,7 @@ export interface Lang {
   deleteConfirmMessage: string
   deleting: string
   delete: string
+  // Exercises
+  exercises: string
+  noExercises: string
 }
