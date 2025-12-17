@@ -3,6 +3,7 @@ import { useNavigate, type NavigateFunction } from 'react-router-dom'
 import { LoginPage } from '../pages/login'
 import { RegisterPage } from '../pages/register'
 import { HomePage } from '../pages/home'
+import { MuscleDetailPage } from '../pages/muscle-detail'
 
 export type Route = {
   component: ReactNode
@@ -30,12 +31,19 @@ export const routes: Route[] = [
     name: 'Home',
     authenticated: true,
   },
+  {
+    component: <MuscleDetailPage />,
+    path: '/muscles/:id',
+    name: 'Muscle Detail',
+    authenticated: true,
+  },
 ]
 
 export interface Router {
   goToHome: () => void
   goToLogin: () => void
   goToRegister: () => void
+  goToMuscleDetail: (id: number) => void
   goToError: () => void
   goToNotFound: () => void
   goTo: (path: string) => void
@@ -53,6 +61,9 @@ export const useRouter = (): Router => {
     },
     goToRegister: () => {
       navigate('/register')
+    },
+    goToMuscleDetail: (id: number) => {
+      navigate(`/muscles/${id}`)
     },
     goToError: () => {
       navigate('/error')
