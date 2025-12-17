@@ -7,10 +7,16 @@ export interface CreateMusclePayload {
   name: string
 }
 
+export interface UpdateMusclePayload {
+  id: number
+  name: string
+}
+
 export interface MusclesState {
   muscles: Muscle[]
   state: 'idle' | 'loading' | 'success' | 'error'
   createState: 'idle' | 'creating' | 'success' | 'error'
+  updateState: 'idle' | 'updating' | 'success' | 'error'
   error: Error | null
 }
 
@@ -18,6 +24,7 @@ const initialState: MusclesState = {
   muscles: [],
   state: 'idle',
   createState: 'idle',
+  updateState: 'idle',
   error: null,
 }
 
@@ -58,10 +65,34 @@ export const musclesSlice = createSlice({
       state.createState = 'idle'
       state.error = null
     },
+    updateRequested: (
+      state: MusclesState,
+      _action: PayloadAction<UpdateMusclePayload>,
+    ) => {
+      state.updateState = 'updating'
+      state.error = null
+    },
+    updateSuccess: (state: MusclesState, action: PayloadAction<Muscle>) => {
+      state.updateState = 'success'
+      const index = state.muscles.findIndex((m) => m.id === action.payload.id)
+      if (index !== -1) {
+        state.muscles[index] = action.payload
+      }
+      state.error = null
+    },
+    updateError: (state: MusclesState, action: PayloadAction<Error>) => {
+      state.updateState = 'error'
+      state.error = action.payload
+    },
+    resetUpdateState: (state: MusclesState) => {
+      state.updateState = 'idle'
+      state.error = null
+    },
     reset: (state: MusclesState) => {
       state.muscles = []
       state.state = 'idle'
       state.createState = 'idle'
+      state.updateState = 'idle'
       state.error = null
     },
   },
