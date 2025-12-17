@@ -81,4 +81,5 @@ export const es: Lang = {
   exerciseName: 'nombre',
   exerciseNamePlaceholder: 'ingresa el nombre del ejercicio',
   exerciseNameRequired: 'el nombre del ejercicio es requerido',
+  editExercise: 'editar ejercicio',
 }
